@@ -1,0 +1,10 @@
+{
+  "ConnectionStrings": {
+    "ConnectionString": "server=(localdb)\\MSSQLLocalDB;Database=Clinic;Integrated Security=true;MultipleActiveResultSets=true;"
+  },
+  "Tokens": {
+    "Key": "dawd;awd9 a192 1212;1;",
+    "Issuer": "http://localhost:2107",
+    "Audience": "users"
+  }
+}
