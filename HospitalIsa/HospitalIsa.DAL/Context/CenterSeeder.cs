@@ -1,5 +1,5 @@
-﻿using HospitalIsa.DBL;
-using HospitalIsa.DBL.Entites;
+﻿using HospitalIsa.DAL;
+using HospitalIsa.DAL.Entites;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -35,6 +35,7 @@ namespace Hospital.DAL
                     {
                         UserName = "Gaja",
                         Email = "markogajicgaja@gmail.com",
+                        
                     };
 
 
