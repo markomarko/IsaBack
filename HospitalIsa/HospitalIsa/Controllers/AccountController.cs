@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
-using AutoMapper.Configuration;
+using Microsoft.Extensions.Configuration;
 using HospitalIsa.API.Models;
 using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Models;
 using HospitalIsa.DAL.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 namespace HospitalIsa.API.Controllers
 {
     
-    [Route("api/controller")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {

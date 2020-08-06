@@ -19,6 +19,8 @@ using AutoMapper;
 using HospitalIsa.DAL.Repositories.Abstract;
 using HospitalIsa.DAL.Entites;
 using Hospital.DAL;
+using HospitalIsa.BLL.Contracts;
+using HospitalIsa.BLL.Services;
 
 namespace HospitalIsa
 {
@@ -61,6 +63,8 @@ namespace HospitalIsa
             services.AddAutoMapper();
 
             services.AddTransient<CenterSeeder>();
+
+            services.AddScoped<IUserContract, UserService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
 
