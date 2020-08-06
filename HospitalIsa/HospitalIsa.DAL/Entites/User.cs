@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HospitalIsa.DBL.Entites
+namespace HospitalIsa.DAL.Entites
 {
-    public class User : IdentityUser
+    public class User : IdentityUser 
     {
         public Guid UserId { get; set; }
+
+
     }
 }

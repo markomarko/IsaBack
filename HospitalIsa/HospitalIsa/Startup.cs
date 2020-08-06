@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HospitalIsa.DBL;
+using HospitalIsa.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using AutoMapper;
+using HospitalIsa.DAL.Repositories.Abstract;
+using HospitalIsa.DAL.Entites;
+using Hospital.DAL;
 
 namespace HospitalIsa
 {
@@ -29,7 +34,13 @@ namespace HospitalIsa
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddIdentity<User, IdentityRole>(cfg =>
+            {
+                cfg.User.RequireUniqueEmail = true;
+                cfg.Password.RequiredLength = 8;
+            })
+            .AddEntityFrameworkStores<CenterContext>();
 
             services.AddAuthentication()
                 .AddCookie()
@@ -46,6 +57,16 @@ namespace HospitalIsa
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("ConnectionString"));
             });
+
+            services.AddAutoMapper();
+
+            services.AddTransient<CenterSeeder>();
+
+            services.AddScoped<IRepository<User>, Repository<User>>();
+
+            services.AddCors();
+            services.AddMvc();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

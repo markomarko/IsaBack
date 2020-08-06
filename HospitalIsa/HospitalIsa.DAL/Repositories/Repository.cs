@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HospitalIsa.BLL.Models
+namespace HospitalIsa.DAL.Repositories
 {
-    class UserPOCO 
+    class Repository
     {
     }
 }
