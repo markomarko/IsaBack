@@ -14,6 +14,7 @@ namespace HospitalIsa.API.Models
         public DateTime BirthDate { get; set; }
         public string Jmbg { get; set; }
         public bool EmailConfirmed { get; set; }
+        public string UserRole { get; set; }
 
     }
 }
