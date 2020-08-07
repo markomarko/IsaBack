@@ -49,5 +49,12 @@ namespace HospitalIsa.API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpPost]
+        [Route("Login")]
+        public async Task<object> Login([FromBody] LoginModel model)
+        {
+            return await _userContract.LoginUser(_mapper.Map<LoginModel, LoginPOCO>(model));
+        }
     }
 }

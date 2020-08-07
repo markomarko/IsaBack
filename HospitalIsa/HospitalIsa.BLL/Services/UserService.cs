@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using AutoMapper;
 using HospitalIsa.DAL.Repositories.Abstract;
 using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HospitalIsa.BLL.Services
 {
@@ -65,6 +68,54 @@ namespace HospitalIsa.BLL.Services
             }
 
             return false;
+        }
+
+        public async Task<object> LoginUser(LoginPOCO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            var roleP = (await _userManager.GetRolesAsync(user)).ToList().FirstOrDefault();
+            if (roleP.Equals("Pacijent"))
+            {
+                if (!user.EmailConfirmed)
+                {
+                    return null;
+                }
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
+            if (result.Succeeded)
+            {
+
+                var role = (await _userManager.GetRolesAsync(user)).ToList().FirstOrDefault();
+
+                var claims = new[]
+                {
+                        new Claim(JwtRegisteredClaimNames.Jti, user.UserId.ToString()),
+                        new Claim("Role", role),
+                    };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var token = new JwtSecurityToken(
+                    _config["Tokens:Issuer"],
+                    _config["Tokens:Audience"],
+                    claims,
+                    expires: DateTime.UtcNow.AddHours(2),
+                    signingCredentials: creds
+
+                );
+
+                var results = new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                };
+
+                return results;
+            }
+            return null;
         }
     }
 }

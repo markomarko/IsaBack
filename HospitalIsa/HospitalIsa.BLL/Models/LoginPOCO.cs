@@ -4,7 +4,9 @@ using System.Text;
 
 namespace HospitalIsa.BLL.Models
 {
-    class LoginPOCO
+    public class LoginPOCO
     {
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }
