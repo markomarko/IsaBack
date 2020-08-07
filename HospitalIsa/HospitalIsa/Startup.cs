@@ -69,6 +69,7 @@ namespace HospitalIsa
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Patient>, Repository<Patient>>();
+            services.AddScoped<IRepository<Employee>, Repository<Employee>>();
 
             services.AddCors();
             services.AddMvc();

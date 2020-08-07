@@ -6,7 +6,7 @@ namespace HospitalIsa.DAL.Entites
 {
     public class Employee
     {
-        public Guid Id { get; set; }
+        public Guid EmployeeId { get; set; }
         public DateTime BirthDate { get; set; }
         public string Jmbg { get; set; }
         public string FirstName { get; set; }
