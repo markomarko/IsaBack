@@ -19,18 +19,21 @@ namespace HospitalIsa.BLL.Services
     public class UserService : IUserContract
     {
         private readonly IRepository<Patient> _patientRepository;
+        private readonly IRepository<Employee> _employeeRepository;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
         public UserService(IRepository<Patient> patientRepository,
+                            IRepository<Employee> employeeRepository,
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
                             IMapper mapper,
                             IConfiguration config)
         {
             _patientRepository = patientRepository;
+            _employeeRepository = employeeRepository;
             _signInManager = signInManager;
             _userManager = userManager;
             _mapper = mapper;
@@ -39,62 +42,69 @@ namespace HospitalIsa.BLL.Services
         
         public async Task<bool> RegisterUser(RegisterPOCO model)
         {
-            var id = new Guid();
+            Guid id = Guid.NewGuid() ;
             var newUser = new User()
             {
                 Email = model.Email,
                 UserName = (model.Email.Split('@')).First(),
-                
+                UserId = id,
+                EmailConfirmed = true
             };
 
             var result = await _userManager.CreateAsync(newUser, model.Password);
-            
+
             if (result.Succeeded)
             {
-                try
+                await _userManager.AddToRoleAsync(newUser, model.UserRole);
+                if (model.UserRole == "Pacijent")
                 {
-                    switch (model.UserRole.ToString())
+                    var newPatient = new Patient()
                     {
-                        case "Pacijent":
-                            await _userManager.AddToRoleAsync(newUser, "Pacijent");
-                            
-                            var newPatient = new Patient()
-                            {
-                                FirstName = model.FirstName,
-                                LastName = model.LastName,
-                                Jmbg = model.Jmbg,
-                                BirthDate = model.BirthDate,
-                                Email = model.Email,
-                                PatientId = id
 
-                            };
-
-                            await _patientRepository.Create(newPatient);
-                            break;
-                        case "Doktor":
-                            await _userManager.AddToRoleAsync(newUser, "Doktor");
-                            break;
-                        case "AdministratorCentra":
-                            await _userManager.AddToRoleAsync(newUser, "AdministratorCentra");
-                            break;
-                        case "AdministratorKlinike":
-                            await _userManager.AddToRoleAsync(newUser, "AdministratorKlinike");
-                            break;
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Jmbg = model.Jmbg,
+                        BirthDate = model.BirthDate,
+                        Email = model.Email,
+                        PatientId = id
+                    };
+                    try
+                    {
+                        newUser.EmailConfirmed = false;
+                        await _patientRepository.Create(newPatient);
                     }
-
-                        
-
+                    catch (Exception e)
+                    {
+                        throw e;
                     }
-                catch (Exception e)
-                {
-                    throw e;
+                    return true;
                 }
-                return true;
-            }
+                else
+                {
+                    var newEmployee = new Employee()
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Jmbg = model.Jmbg,
+                        BirthDate = model.BirthDate,
+                        Email = model.Email,
+                        EmployeeId = id
 
+                    };
+                    try
+                    {
+                        await _employeeRepository.Create(newEmployee);
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                    return true;  
+                }
+            }
             return false;
         }
-
+        
         public async Task<object> LoginUser(LoginPOCO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
