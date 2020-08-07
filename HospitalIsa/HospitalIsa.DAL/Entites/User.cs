@@ -10,6 +10,6 @@ namespace HospitalIsa.DAL.Entites
     {
         public Guid UserId { get; set; }
 
-
+        
     }
 }

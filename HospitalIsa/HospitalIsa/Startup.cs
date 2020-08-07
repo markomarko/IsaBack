@@ -21,6 +21,7 @@ using HospitalIsa.DAL.Entites;
 using Hospital.DAL;
 using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Services;
+using HospitalIsa.DAL.Repositories;
 
 namespace HospitalIsa
 {
@@ -67,6 +68,7 @@ namespace HospitalIsa
             services.AddScoped<IUserContract, UserService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IRepository<Patient>, Repository<Patient>>();
 
             services.AddCors();
             services.AddMvc();

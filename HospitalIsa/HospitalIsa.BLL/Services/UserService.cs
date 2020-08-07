@@ -15,48 +15,73 @@ namespace HospitalIsa.BLL.Services
 {
     public class UserService : IUserContract
     {
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Patient> _patientRepository;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
-        public UserService(IRepository<User> userRepository,
+        public UserService(IRepository<Patient> patientRepository,
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
                             IMapper mapper,
                             IConfiguration config)
         {
-            _userRepository = userRepository;
+            _patientRepository = patientRepository;
             _signInManager = signInManager;
             _userManager = userManager;
             _mapper = mapper;
             _config = config;
         }
-
+        
         public async Task<bool> RegisterUser(RegisterPOCO model)
         {
+            var id = new Guid();
             var newUser = new User()
             {
                 Email = model.Email,
                 UserName = (model.Email.Split('@')).First(),
-                UserId = new Guid()
+                
             };
 
-            var newPatient = new Patient()
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Jmbg = model.Jmbg,
-                BirthDate = model.BirthDate
-            };
             var result = await _userManager.CreateAsync(newUser, model.Password);
+            
             if (result.Succeeded)
             {
                 try
                 {
-                    await _userManager.AddToRoleAsync(newUser, "Pacijent");
-                }
+                    switch (model.UserRole.ToString())
+                    {
+                        case "Pacijent":
+                            await _userManager.AddToRoleAsync(newUser, "Pacijent");
+                            
+                            var newPatient = new Patient()
+                            {
+                                FirstName = model.FirstName,
+                                LastName = model.LastName,
+                                Jmbg = model.Jmbg,
+                                BirthDate = model.BirthDate,
+                                Email = model.Email,
+                                PatientId = id
+
+                            };
+
+                            await _patientRepository.Create(newPatient);
+                            break;
+                        case "Doktor":
+                            await _userManager.AddToRoleAsync(newUser, "Doktor");
+                            break;
+                        case "AdministratorCentra":
+                            await _userManager.AddToRoleAsync(newUser, "AdministratorCentra");
+                            break;
+                        case "AdministratorKlinike":
+                            await _userManager.AddToRoleAsync(newUser, "AdministratorKlinike");
+                            break;
+                    }
+
+                        
+
+                    }
                 catch (Exception e)
                 {
                     throw e;
