@@ -97,13 +97,9 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> LoginUser(LoginPOCO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
-            var roleP = (await _userManager.GetRolesAsync(user)).ToList().FirstOrDefault();
-            if (roleP.Equals("Pacijent"))
+            if (!user.EmailConfirmed)
             {
-                if (!user.EmailConfirmed)
-                {
-                    return null;
-                }
+               return null;
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
