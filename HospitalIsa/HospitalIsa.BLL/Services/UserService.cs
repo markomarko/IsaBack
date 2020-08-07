@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
 using HospitalIsa.DAL.Repositories.Abstract;
+using System.Linq;
 
 namespace HospitalIsa.BLL.Services
 {
@@ -35,7 +36,35 @@ namespace HospitalIsa.BLL.Services
 
         public async Task<bool> RegisterUser(RegisterPOCO model)
         {
-            return true;
+            var newUser = new User()
+            {
+                Email = model.Email,
+                UserName = (model.Email.Split('@')).First(),
+                UserId = new Guid()
+            };
+
+            var newPatient = new Patient()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Jmbg = model.Jmbg,
+                BirthDate = model.BirthDate
+            };
+            var result = await _userManager.CreateAsync(newUser, model.Password);
+            if (result.Succeeded)
+            {
+                try
+                {
+                    await _userManager.AddToRoleAsync(newUser, "Pacijent");
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }
