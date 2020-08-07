@@ -20,6 +20,7 @@ namespace HospitalIsa.BLL.Services
     {
         private readonly IRepository<Patient> _patientRepository;
         private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
@@ -27,6 +28,7 @@ namespace HospitalIsa.BLL.Services
 
         public UserService(IRepository<Patient> patientRepository,
                             IRepository<Employee> employeeRepository,
+                            IRepository<User> userRepository,
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
                             IMapper mapper,
@@ -34,6 +36,7 @@ namespace HospitalIsa.BLL.Services
         {
             _patientRepository = patientRepository;
             _employeeRepository = employeeRepository;
+            _userRepository = userRepository;
             _signInManager = signInManager;
             _userManager = userManager;
             _mapper = mapper;
@@ -136,6 +139,13 @@ namespace HospitalIsa.BLL.Services
                 return results;
             }
             return null;
+        }
+
+        public async Task<object> GetRegisterRequests()
+        {
+            IEnumerable<User> users = _userRepository.GetAll();
+            var results = users.Where(x => x.EmailConfirmed.Equals(false)).ToList();
+            return results;
         }
     }
 }

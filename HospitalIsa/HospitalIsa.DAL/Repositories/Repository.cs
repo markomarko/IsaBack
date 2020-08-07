@@ -46,9 +46,9 @@ namespace HospitalIsa.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<E> GetAll()
+        public  IEnumerable<E> GetAll()
         {
-            throw new NotImplementedException();
+            return _dbSet;
         }
 
         public void Update(E entity)

@@ -12,5 +12,6 @@ namespace HospitalIsa.BLL.Contracts
         //Task<bool> RegisterPatient(RegisterPOCO model);
 
         Task<object> LoginUser(LoginPOCO loginPOCO);
+        Task<object> GetRegisterRequests();
     }
 }

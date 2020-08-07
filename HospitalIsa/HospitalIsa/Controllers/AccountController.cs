@@ -56,5 +56,11 @@ namespace HospitalIsa.API.Controllers
         {
             return await _userContract.LoginUser(_mapper.Map<LoginModel, LoginPOCO>(model));
         }
+        [HttpGet]
+        [Route("GetRegisterRequests")]
+        public async Task<object> GetRegisterRequests()
+        {
+            return await _userContract.GetRegisterRequests();
+        }
     }
 }
