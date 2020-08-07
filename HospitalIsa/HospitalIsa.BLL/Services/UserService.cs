@@ -39,9 +39,17 @@ namespace HospitalIsa.BLL.Services
             var newUser = new User()
             {
                 Email = model.Email,
-                UserName = (model.Email.Split('@')).First()
+                UserName = (model.Email.Split('@')).First(),
+                UserId = new Guid()
             };
 
+            var newPatient = new Patient()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Jmbg = model.Jmbg,
+                BirthDate = model.BirthDate
+            };
             var result = await _userManager.CreateAsync(newUser, model.Password);
             if (result.Succeeded)
             {
