@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalIsa.BLL", "Hospital
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalIsa.DAL", "HospitalIsa.DAL\HospitalIsa.DAL.csproj", "{479E6ED3-1C6E-4FEB-A733-0FCF4DA6990D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalIsa.MailServices", "Hospital.MailServices\HospitalIsa.MailServices.csproj", "{69AD9A16-5D27-49B3-8140-E833C48AEAE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{479E6ED3-1C6E-4FEB-A733-0FCF4DA6990D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{479E6ED3-1C6E-4FEB-A733-0FCF4DA6990D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{479E6ED3-1C6E-4FEB-A733-0FCF4DA6990D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69AD9A16-5D27-49B3-8140-E833C48AEAE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69AD9A16-5D27-49B3-8140-E833C48AEAE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69AD9A16-5D27-49B3-8140-E833C48AEAE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69AD9A16-5D27-49B3-8140-E833C48AEAE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
