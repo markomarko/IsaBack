@@ -10,8 +10,8 @@ using Microsoft.Extensions.Configuration;
 using AutoMapper;
 using HospitalIsa.DAL.Repositories.Abstract;
 using System.Linq;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 
 namespace HospitalIsa.BLL.Services
@@ -42,12 +42,12 @@ namespace HospitalIsa.BLL.Services
         
         public async Task<bool> RegisterUser(RegisterPOCO model)
         {
-            Guid id = Guid.NewGuid() ;
+            
             var newUser = new User()
             {
                 Email = model.Email,
                 UserName = (model.Email.Split('@')).First(),
-                UserId = id,
+                UserId = Guid.NewGuid(),
                 EmailConfirmed = true
             };
 
@@ -56,7 +56,7 @@ namespace HospitalIsa.BLL.Services
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(newUser, model.UserRole);
-                if (model.UserRole == "Pacijent")
+                if (await _userManager.IsInRoleAsync(newUser, "Pacijent"))
                 {
                     var newPatient = new Patient()
                     {
@@ -66,17 +66,11 @@ namespace HospitalIsa.BLL.Services
                         Jmbg = model.Jmbg,
                         BirthDate = model.BirthDate,
                         Email = model.Email,
-                        PatientId = id
+                        PatientId = newUser.UserId
                     };
-                    try
-                    {
-                        newUser.EmailConfirmed = false;
-                        await _patientRepository.Create(newPatient);
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
+                    newUser.EmailConfirmed = false;
+                    await _patientRepository.Create(newPatient);                    
+                   
                     return true;
                 }
                 else
@@ -88,17 +82,12 @@ namespace HospitalIsa.BLL.Services
                         Jmbg = model.Jmbg,
                         BirthDate = model.BirthDate,
                         Email = model.Email,
-                        EmployeeId = id
+                        EmployeeId = newUser.UserId
 
                     };
-                    try
-                    {
+                    
                         await _employeeRepository.Create(newEmployee);
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
+                    
                     return true;  
                 }
             }

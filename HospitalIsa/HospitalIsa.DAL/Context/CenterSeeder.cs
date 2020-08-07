@@ -35,6 +35,9 @@ namespace Hospital.DAL
                     {
                         UserName = "Gaja",
                         Email = "markogajicgaja@gmail.com",
+                        EmailConfirmed = true,
+                        UserId = Guid.NewGuid()
+                        
                         
                     };
 

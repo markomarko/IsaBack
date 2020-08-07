@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200807131531_EmailAndRoleModel")]
-    partial class EmailAndRoleModel
+    [Migration("20200807163011_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,26 @@ namespace HospitalIsa.DAL.Migrations
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Employee", b =>
+                {
+                    b.Property<Guid>("EmployeeId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("BirthDate");
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("Jmbg");
+
+                    b.Property<string>("LastName");
+
+                    b.HasKey("EmployeeId");
+
+                    b.ToTable("Employees");
+                });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Patient", b =>
                 {
