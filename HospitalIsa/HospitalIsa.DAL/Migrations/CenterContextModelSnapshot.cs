@@ -34,6 +34,8 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("LastName");
 
+                    b.Property<string>("Specialization");
+
                     b.HasKey("EmployeeId");
 
                     b.ToTable("Employees");
