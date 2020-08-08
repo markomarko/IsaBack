@@ -69,8 +69,6 @@ namespace HospitalIsa.API.Controllers
         [Route("AcceptPatientRegisterRequest")]
         public async Task<IActionResult> AcceptPatientRegisterRequest(MailModel mail)
         {
-            mail.Body = "Your registration request has been accepted. Activate your account on this link:" + "http://localhost:4200/";
-            mail.Subject = "HOSPITAL ISA - registration APPROVED";
             var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
             if (await _userContract.AcceptPatientRegisterRequest(mailModel))
             {
@@ -84,8 +82,6 @@ namespace HospitalIsa.API.Controllers
         [Route("DenyPatientRegisterRequest")]
         public async Task<IActionResult> DenyPatientRegisterRequest(MailModel mail)
         {
-            mail.Body = "Your registration request has been denied";
-            mail.Subject = "HOSPITAL ISA - registration DENIED";
             var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
             if (await _userContract.DenyPatientRegisterRequest(mailModel))
             {
