@@ -100,9 +100,10 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> LoginUser(LoginPOCO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
+
             if (!user.EmailConfirmed)
             {
-               return null;
+                return null;
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
@@ -111,12 +112,11 @@ namespace HospitalIsa.BLL.Services
             {
 
                 var role = (await _userManager.GetRolesAsync(user)).ToList().FirstOrDefault();
-
                 var claims = new[]
                 {
-                        new Claim(JwtRegisteredClaimNames.Jti, user.UserId.ToString()),
-                        new Claim("Role", role),
-                    };
+                    new Claim(JwtRegisteredClaimNames.Jti, user.UserId.ToString()),
+                    new Claim("Role", role),
+                };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -127,7 +127,6 @@ namespace HospitalIsa.BLL.Services
                     claims,
                     expires: DateTime.UtcNow.AddHours(2),
                     signingCredentials: creds
-
                 );
 
                 var results = new
