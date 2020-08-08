@@ -57,7 +57,8 @@ namespace HospitalIsa.DAL.Migrations
                     Jmbg = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true)
+                    Email = table.Column<string>(nullable: true),
+                    Specialization = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

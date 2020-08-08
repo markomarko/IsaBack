@@ -90,6 +90,5 @@ namespace HospitalIsa.API.Controllers
             }
             return BadRequest(); 
         }
-
     }
 }

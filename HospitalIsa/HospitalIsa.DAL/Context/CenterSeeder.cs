@@ -37,19 +37,17 @@ namespace Hospital.DAL
                         Email = "markogajicgaja@gmail.com",
                         EmailConfirmed = true,
                         UserId = Guid.NewGuid()
-                        
-                        
                     };
 
 
-                    await _roleManager.CreateAsync(new IdentityRole("AdministratorCentra"));
-                    await _roleManager.CreateAsync(new IdentityRole("AdministratorKlinike"));
-                    await _roleManager.CreateAsync(new IdentityRole("Doktor"));
-                    await _roleManager.CreateAsync(new IdentityRole("Sestra"));
-                    await _roleManager.CreateAsync(new IdentityRole("Pacijent"));
+                    await _roleManager.CreateAsync(new IdentityRole("ClinicCenterAdmin"));
+                    await _roleManager.CreateAsync(new IdentityRole("ClinicAdmin"));
+                    await _roleManager.CreateAsync(new IdentityRole("Doctor"));
+                    await _roleManager.CreateAsync(new IdentityRole("Nurse"));
+                    await _roleManager.CreateAsync(new IdentityRole("Patient"));
 
                     var result = await _userManager.CreateAsync(admin, "Gaja1234!");
-                    var result1 = await _userManager.AddToRoleAsync(admin, "AdministratorCentra");
+                    var result1 = await _userManager.AddToRoleAsync(admin, "ClinicCenterAdmin");
                     if (result != IdentityResult.Success)
                     {
                         throw new InvalidOperationException("Could not create new user in seeder");

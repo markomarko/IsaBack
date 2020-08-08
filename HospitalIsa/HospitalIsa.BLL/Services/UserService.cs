@@ -45,7 +45,6 @@ namespace HospitalIsa.BLL.Services
         
         public async Task<bool> RegisterUser(RegisterPOCO model)
         {
-            
             var newUser = new User()
             {
                 Email = model.Email,
@@ -59,11 +58,10 @@ namespace HospitalIsa.BLL.Services
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(newUser, model.UserRole);
-                if (await _userManager.IsInRoleAsync(newUser, "Pacijent"))
+                if (await _userManager.IsInRoleAsync(newUser, "Patient"))
                 {
                     var newPatient = new Patient()
                     {
-
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Jmbg = model.Jmbg,
@@ -73,7 +71,6 @@ namespace HospitalIsa.BLL.Services
                     };
                     newUser.EmailConfirmed = false;
                     await _patientRepository.Create(newPatient);
-
                     return true;
                 }
                 else
@@ -85,18 +82,15 @@ namespace HospitalIsa.BLL.Services
                         Jmbg = model.Jmbg,
                         BirthDate = model.BirthDate,
                         Email = model.Email,
-                        EmployeeId = newUser.UserId
-
+                        EmployeeId = newUser.UserId,
+                        Specialization = model.Specialization
                     };
-                    
-                        await _employeeRepository.Create(newEmployee);
-                    
+                    await _employeeRepository.Create(newEmployee);
                     return true;  
                 }
             }
             return false;
         }
-        
         public async Task<object> LoginUser(LoginPOCO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -105,7 +99,6 @@ namespace HospitalIsa.BLL.Services
             {
                 return null;
             }
-
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
             if (result.Succeeded)
@@ -139,14 +132,12 @@ namespace HospitalIsa.BLL.Services
             }
             return null;
         }
-
         public async Task<object> GetRegisterRequests()
         {
             IEnumerable<User> users = _userRepository.GetAll();
             var results = users.Where(x => x.EmailConfirmed.Equals(false)).ToList();
             return results;
         }
-
         public async Task<bool> AcceptPatientRegisterRequest(MailPOCO mail)
         {
             try
@@ -176,6 +167,18 @@ namespace HospitalIsa.BLL.Services
             {
                 throw e;
             }
+        }
+        public async Task<object> GetUserById(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+             if (await _userManager.IsInRoleAsync(user, "Pacijent"))
+            {
+               return  _patientRepository.Find(patient => patient.PatientId.Equals(id)).FirstOrDefault();
+            } else
+            {
+               return _employeeRepository.Find(employee => employee.EmployeeId.Equals(id)).FirstOrDefault();
+            }
+            
         }
     }
 }
