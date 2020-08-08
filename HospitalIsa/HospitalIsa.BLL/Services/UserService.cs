@@ -72,8 +72,8 @@ namespace HospitalIsa.BLL.Services
                         PatientId = newUser.UserId
                     };
                     newUser.EmailConfirmed = false;
-                    await _patientRepository.Create(newPatient);                    
-                   
+                    await _patientRepository.Create(newPatient);
+
                     return true;
                 }
                 else
@@ -146,6 +146,37 @@ namespace HospitalIsa.BLL.Services
             IEnumerable<User> users = _userRepository.GetAll();
             var results = users.Where(x => x.EmailConfirmed.Equals(false)).ToList();
             return results;
+        }
+
+        public async Task<bool> AcceptPatientRegisterRequest(MailPOCO mail)
+        {
+            try
+            {
+                var patient = await _userManager.FindByEmailAsync(mail.Receiver);
+                patient.EmailConfirmed = true;
+                await _userManager.UpdateAsync(patient);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public async Task<bool> DenyPatientRegisterRequest(MailPOCO mail)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(mail.Receiver);
+                await _userManager.DeleteAsync(user);
+                var patient = _patientRepository.Find(x => x.PatientId.Equals(user.UserId)).First();
+                _patientRepository.Delete(patient);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

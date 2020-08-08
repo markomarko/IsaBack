@@ -22,9 +22,11 @@ namespace HospitalIsa.API.Services
             CreateMap<LoginPOCO, LoginModel>();
             CreateMap<UserModel, UserPOCO>();
             CreateMap<UserPOCO, UserModel>();
+            CreateMap<MailModel, MailPOCO>();
+            CreateMap<MailPOCO, MailModel>();
 
-            //relation BLL <=> DAL
-            CreateMap<RegisterPOCO, User>();
+             //relation BLL <=> DAL
+             CreateMap<RegisterPOCO, User>();
             CreateMap<User, RegisterPOCO>();
 
         }

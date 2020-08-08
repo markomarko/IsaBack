@@ -13,5 +13,7 @@ namespace HospitalIsa.BLL.Contracts
 
         Task<object> LoginUser(LoginPOCO loginPOCO);
         Task<object> GetRegisterRequests();
+        Task<bool> AcceptPatientRegisterRequest(MailPOCO mail);
+        Task<bool> DenyPatientRegisterRequest(MailPOCO mail);
     }
 }
