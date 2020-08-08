@@ -27,8 +27,6 @@ namespace Hospital.MailService
                     mail.Body = mailModel.Body;
                     
                     SmtpServer.Send(mail);
-                    //MessageBox.Show("mail Send");
-                    //Console.WriteLine("Mail Sent");
                 }
             } catch (Exception e)
             {
