@@ -1,4 +1,5 @@
 ﻿using HospitalIsa.BLL.Models;
+using System;
 using System.Net.Mail;
 
 namespace Hospital.MailService
@@ -6,7 +7,7 @@ namespace Hospital.MailService
     public class MailService
     {
 
-        public void SendEmail(RegisterPOCO user)
+        public void SendEmail(MailPOCO mailModel)
         {
 
             MailMessage mail = new MailMessage();
@@ -15,30 +16,23 @@ namespace Hospital.MailService
             {
                 using (SmtpServer)
                 {
-                    MailAddress adress = new MailAddress(user.Email);
+                    mail.Subject = mailModel.Subject;
+                    mail.From = new MailAddress("isa.hospital2020@gmail.com");
+                    mail.To.Add(new MailAddress(mailModel.Receiver));
 
-                    mail.From = new MailAddress("hospital.isa@gmail.com");
-                    mail.To.Add(adress);
-                    if (user.EmailConfirmed == true)
-                    {
-                        mail.Subject = "Hospital - Registration request CONFIRMED";
-                        mail.Body = "Vasa registracija je odobrena. Link za aktivaciju:" +
-
-                                    "http://localhost:4200/";
-                    }
-                    else
-                    {
-                        mail.Subject = "Hospital - Registration request DENIED";
-                        mail.Body = "ODBIJENO";
-                    }
                     SmtpServer.Port = 587;
-                    SmtpServer.Credentials = new System.Net.NetworkCredential("hospital.isa@gmail.com", "Hospital123");
+                    SmtpServer.Credentials = new System.Net.NetworkCredential("isa.hospital2020@gmail.com", "Hospital123");
                     SmtpServer.EnableSsl = true;
-
+                    
+                    mail.Body = mailModel.Body;
+                    
                     SmtpServer.Send(mail);
                     //MessageBox.Show("mail Send");
                     //Console.WriteLine("Mail Sent");
                 }
+            } catch (Exception e)
+            {
+                throw e;
             }
             finally
             {

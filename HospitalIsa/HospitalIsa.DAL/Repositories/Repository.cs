@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace HospitalIsa.DAL.Repositories
 {
@@ -38,17 +39,19 @@ namespace HospitalIsa.DAL.Repositories
 
         public void Delete(E entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
         }
 
         public IEnumerable<E> Find(Func<E, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _dbSet.Where(predicate);
         }
 
-        public IEnumerable<E> GetAll()
+       
+
+        public  IEnumerable<E> GetAll()
         {
-            throw new NotImplementedException();
+            return _dbSet;
         }
 
         public void Update(E entity)

@@ -19,8 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hospital.MailServices\HospitalIsa.MailServices.csproj" />
     <ProjectReference Include="..\HospitalIsa.DAL\HospitalIsa.DAL.csproj" />
     <ProjectReference Include="..\HospitalIsa.BLL\HospitalIsa.BLL.csproj" />
+   
   </ItemGroup>
 
 </Project>

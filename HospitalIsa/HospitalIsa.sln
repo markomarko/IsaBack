@@ -4,12 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalIsa.API", "HospitalIsa\HospitalIsa.API.csproj", "{3DF6C636-0725-4019-ADC8-3C024E25B59E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{69AD9A16-5D27-49B3-8140-E833C48AEAE2} = {69AD9A16-5D27-49B3-8140-E833C48AEAE2}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalIsa.BLL", "HospitalIsa.BLL\HospitalIsa.BLL.csproj", "{B2345ABA-0C09-4810-9AD7-8299B527F684}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalIsa.DAL", "HospitalIsa.DAL\HospitalIsa.DAL.csproj", "{479E6ED3-1C6E-4FEB-A733-0FCF4DA6990D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalIsa.MailServices", "Hospital.MailServices\HospitalIsa.MailServices.csproj", "{69AD9A16-5D27-49B3-8140-E833C48AEAE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalIsa.MailServices", "Hospital.MailServices\HospitalIsa.MailServices.csproj", "{69AD9A16-5D27-49B3-8140-E833C48AEAE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

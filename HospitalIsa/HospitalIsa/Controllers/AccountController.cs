@@ -11,10 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hospital.MailService;
 
 namespace HospitalIsa.API.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -24,8 +25,9 @@ namespace HospitalIsa.API.Controllers
         private readonly IUserContract _userContract;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
+        private MailService ms = new MailService();
 
-        public AccountController( SignInManager<User> signInManager,
+        public AccountController(SignInManager<User> signInManager,
                                    UserManager<User> userManager,
                                    IUserContract userContract,
                                    IMapper mapper,
@@ -38,9 +40,9 @@ namespace HospitalIsa.API.Controllers
             _config = config;
         }
 
-       [HttpPost]
-       [Route("Register")]
-       public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var result = await _userContract.RegisterUser(_mapper.Map<RegisterModel, RegisterPOCO>(model));
             if (result)
@@ -56,5 +58,42 @@ namespace HospitalIsa.API.Controllers
         {
             return await _userContract.LoginUser(_mapper.Map<LoginModel, LoginPOCO>(model));
         }
+        [HttpGet]
+        [Route("GetRegisterRequests")]
+        public async Task<object> GetRegisterRequests()
+        {
+            return await _userContract.GetRegisterRequests();
+        }
+
+        [HttpPost]
+        [Route("AcceptPatientRegisterRequest")]
+        public async Task<IActionResult> AcceptPatientRegisterRequest(MailModel mail)
+        {
+            mail.Body = "Your registration request has been accepted. Activate your account on this link:" + "http://localhost:4200/";
+            mail.Subject = "HOSPITAL ISA - registration APPROVED";
+            var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
+            if (await _userContract.AcceptPatientRegisterRequest(mailModel))
+            {
+                ms.SendEmail(mailModel);
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("DenyPatientRegisterRequest")]
+        public async Task<IActionResult> DenyPatientRegisterRequest(MailModel mail)
+        {
+            mail.Body = "Your registration request has been denied";
+            mail.Subject = "HOSPITAL ISA - registration DENIED";
+            var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
+            if (await _userContract.DenyPatientRegisterRequest(mailModel))
+            {
+                ms.SendEmail(mailModel);
+                return Ok();
+            }
+            return BadRequest(); 
+        }
+
     }
 }
