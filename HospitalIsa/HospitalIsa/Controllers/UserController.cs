@@ -46,5 +46,30 @@ namespace HospitalIsa.API.Controllers
         {
             return await _userContract.GetUserById(id);
         }
+
+        [HttpPost]
+        [Route("UpdatePatient")]
+        public async Task<IActionResult> UpdatePatient([FromBody] PatientModel patient)
+        {
+            var result = await _userContract.UpdatePatient(_mapper.Map<PatientModel, PatientPOCO> (patient));
+            if (result)
+            {
+                return Ok();
+            }
+            else 
+            {
+                return BadRequest();
+            }
+        }
+        
+        [HttpPost]
+        [Route("UpdateEmployee")]
+        public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeModel employee)
+        {
+            var result = await _userContract.UpdateEmployee(_mapper.Map<EmployeeModel, EmployeePOCO>(employee));
+            if (result) return Ok();
+                        return BadRequest();
+            
+        }
     }
 }

@@ -56,20 +56,21 @@ namespace HospitalIsa.DAL.Repositories
 
         public async Task<bool> Update(E entity)
         {
-            
             try
             {
                 _dbSet.Remove(entity);
+                await _centerContext.SaveChangesAsync();
                 await _dbSet.AddAsync(entity);
                 await _centerContext.SaveChangesAsync();
+
+                return true;
             }
             catch (Exception e)
             {
-                return false;
                 throw e;
             }
+            return false;
 
-            return true;
 
         }
     }
