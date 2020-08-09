@@ -10,5 +10,7 @@ namespace HospitalIsa.BLL.Contracts
     {
         Task<bool> AddClinic(ClinicPOCO model);
         Task<object> GetAllClinics();
+        Task<object> GetClinicByAdminId(Guid adminId);
+        Task<object> GetClinicById(Guid id);
     }
 }

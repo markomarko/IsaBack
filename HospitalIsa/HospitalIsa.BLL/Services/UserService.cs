@@ -183,9 +183,10 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
         }
+
         public async Task<object> GetUserById(Guid id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = _userRepository.Find(u => u.UserId.Equals(id)).FirstOrDefault();
              if (await _userManager.IsInRoleAsync(user, "Pacijent"))
             {
                return  _patientRepository.Find(patient => patient.PatientId.Equals(id)).FirstOrDefault();

@@ -41,7 +41,7 @@ namespace HospitalIsa.API.Controllers
         }
  
         [HttpGet]
-        [Route("GetUserById")]
+        [Route("GetUserById/{id}")]
         public async Task<object> GetUserById([FromRoute] Guid id)
         {
             return await _userContract.GetUserById(id);
