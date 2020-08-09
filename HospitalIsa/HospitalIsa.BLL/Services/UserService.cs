@@ -25,7 +25,8 @@ namespace HospitalIsa.BLL.Services
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
-        
+        private readonly IMapper _mapper;
+
 
         public UserService(IRepository<Patient> patientRepository,
                             IRepository<Employee> employeeRepository,
@@ -33,7 +34,8 @@ namespace HospitalIsa.BLL.Services
                             IRepository<Clinic> clinicRepository,
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
-                            IConfiguration config)
+                            IConfiguration config,
+                             IMapper mapper)
         {
             _patientRepository = patientRepository;
             _employeeRepository = employeeRepository;
@@ -42,6 +44,7 @@ namespace HospitalIsa.BLL.Services
             _signInManager = signInManager;
             _userManager = userManager;
             _config = config;
+            _mapper = mapper; 
         }
         
         public async Task<bool> RegisterUser(RegisterPOCO model)
@@ -191,7 +194,7 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> GetUserById(Guid id)
         {
             var user = _userRepository.Find(u => u.UserId.Equals(id)).FirstOrDefault();
-             if (await _userManager.IsInRoleAsync(user, "Pacijent"))
+             if (await _userManager.IsInRoleAsync(user, "Patient"))
             {
                return  _patientRepository.Find(patient => patient.PatientId.Equals(id)).FirstOrDefault();
             } else
@@ -199,6 +202,22 @@ namespace HospitalIsa.BLL.Services
                return _employeeRepository.Find(employee => employee.EmployeeId.Equals(id)).FirstOrDefault();
             }
             
+        }
+
+        public async Task<bool> UpdatePatient(PatientPOCO patient)
+        {
+            var result = await _patientRepository.Update(_mapper.Map<PatientPOCO, Patient>(patient));
+            if (result)
+            {
+                return true;
+            }else 
+                return false;
+        }
+        public async Task<bool> UpdateEmployee(EmployeePOCO employee)
+        {
+            var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
+            if (result) return true;
+                        return false;
         }
     }
 }
