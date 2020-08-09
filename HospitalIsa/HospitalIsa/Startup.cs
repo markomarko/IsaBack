@@ -66,10 +66,12 @@ namespace HospitalIsa
             services.AddTransient<CenterSeeder>();
 
             services.AddScoped<IUserContract, UserService>();
+            services.AddScoped<IClinicContract, ClinicService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Patient>, Repository<Patient>>();
             services.AddScoped<IRepository<Employee>, Repository<Employee>>();
+            services.AddScoped<IRepository<Clinic>, Repository<Clinic>>();
 
             services.AddCors();
             services.AddMvc();

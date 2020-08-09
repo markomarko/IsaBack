@@ -21,14 +21,14 @@ namespace HospitalIsa.DAL.Migrations
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Clinic", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ClinicId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");
 
                     b.Property<string>("Name");
 
-                    b.HasKey("Id");
+                    b.HasKey("ClinicId");
 
                     b.ToTable("Clinics");
                 });

@@ -49,20 +49,16 @@ namespace HospitalIsa.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "Clinics",
                 columns: table => new
                 {
-                    EmployeeId = table.Column<Guid>(nullable: false),
-                    BirthDate = table.Column<DateTime>(nullable: false),
-                    Jmbg = table.Column<string>(nullable: true),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    Specialization = table.Column<string>(nullable: true)
+                    ClinicId = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
+                    table.PrimaryKey("PK_Clinics", x => x.ClinicId);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,6 +183,30 @@ namespace HospitalIsa.DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<Guid>(nullable: false),
+                    BirthDate = table.Column<DateTime>(nullable: false),
+                    Jmbg = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    Specialization = table.Column<string>(nullable: true),
+                    ClinicId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
+                    table.ForeignKey(
+                        name: "FK_Employees_Clinics_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinics",
+                        principalColumn: "ClinicId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -225,6 +245,11 @@ namespace HospitalIsa.DAL.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_ClinicId",
+                table: "Employees",
+                column: "ClinicId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -255,6 +280,9 @@ namespace HospitalIsa.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Clinics");
         }
     }
 }

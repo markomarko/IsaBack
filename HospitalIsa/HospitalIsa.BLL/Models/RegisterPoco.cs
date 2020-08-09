@@ -15,6 +15,7 @@ namespace HospitalIsa.BLL.Models
         public bool EmailConfirmed { get; set; }
         public string UserRole { get; set; }
         public string Specialization { get; set; }
+        public string ClinicId { get; set; }
 
     }
 }

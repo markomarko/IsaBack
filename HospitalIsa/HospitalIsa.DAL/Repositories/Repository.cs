@@ -54,9 +54,23 @@ namespace HospitalIsa.DAL.Repositories
             return _dbSet;
         }
 
-        public void Update(E entity)
+        public async Task<bool> Update(E entity)
         {
-            throw new NotImplementedException();
+            
+            try
+            {
+                _dbSet.Remove(entity);
+                await _dbSet.AddAsync(entity);
+                await _centerContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return false;
+                throw e;
+            }
+
+            return true;
+
         }
     }
 }

@@ -7,7 +7,7 @@ namespace HospitalIsa.API.Models
 {
     public class ClinicModel
     {
-        public Guid Id { get; set; }
+        public Guid ClinicId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public List<EmployeeModel> Employees { get; set; }

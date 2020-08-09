@@ -9,7 +9,6 @@ namespace HospitalIsa.BLL.Contracts
     public interface IUserContract
     {
         Task<bool> RegisterUser(RegisterPOCO model);
-        //Task<bool> RegisterPatient(RegisterPOCO model);
         Task<object> LoginUser(LoginPOCO loginPOCO);
         Task<object> GetRegisterRequests();
         Task<bool> AcceptPatientRegisterRequest(MailPOCO mail);
