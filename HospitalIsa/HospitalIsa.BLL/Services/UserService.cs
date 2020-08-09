@@ -74,8 +74,8 @@ namespace HospitalIsa.BLL.Services
                     await _patientRepository.Create(newPatient);
                     return true;
                 }
-                else
-                {
+                else 
+                { 
                     var newEmployee = new Employee()
                     {
                         FirstName = model.FirstName,
@@ -88,14 +88,18 @@ namespace HospitalIsa.BLL.Services
                     };
                     try
                     {
-                        var clinicToAddEmployee = _clinicRepository.Find(clinic => clinic.ClinicId.ToString().Equals(model.ClinicId.ToString())).FirstOrDefault();
-                        if (clinicToAddEmployee.Employees == null)
+
+                        if (!await _userManager.IsInRoleAsync(newUser, "ClinicCenterAdmin"))
                         {
-                            clinicToAddEmployee.Employees = new List<Employee>();
+                            var clinicToAddEmployee = _clinicRepository.Find(clinic => clinic.ClinicId.ToString().Equals(model.ClinicId.ToString())).FirstOrDefault();
+                            if (clinicToAddEmployee.Employees == null)
+                            {
+                                clinicToAddEmployee.Employees = new List<Employee>();
+                            }
+                            clinicToAddEmployee.Employees.Add(newEmployee);
                         }
-                        clinicToAddEmployee.Employees.Add(newEmployee);
-                        //await _clinicRepository.Update(clinicToAddEmployee);
-                        await _employeeRepository.Create(newEmployee);
+                            //await _clinicRepository.Update(clinicToAddEmployee);
+                            await _employeeRepository.Create(newEmployee);
                         return true;
                     } catch (Exception e)
                     {
