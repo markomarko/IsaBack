@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200808183830_init")]
+    [Migration("20200808213200_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,12 +21,28 @@ namespace HospitalIsa.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Clinic", b =>
+                {
+                    b.Property<Guid>("ClinicId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Address");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ClinicId");
+
+                    b.ToTable("Clinics");
+                });
+
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Employee", b =>
                 {
                     b.Property<Guid>("EmployeeId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("BirthDate");
+
+                    b.Property<Guid?>("ClinicId");
 
                     b.Property<string>("Email");
 
@@ -39,6 +55,8 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<string>("Specialization");
 
                     b.HasKey("EmployeeId");
+
+                    b.HasIndex("ClinicId");
 
                     b.ToTable("Employees");
                 });
@@ -224,6 +242,13 @@ namespace HospitalIsa.DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Employee", b =>
+                {
+                    b.HasOne("HospitalIsa.DAL.Entites.Clinic")
+                        .WithMany("Employees")
+                        .HasForeignKey("ClinicId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HospitalIsa.BLL.Models
 {
-    class EmployeePOCO
+    public class EmployeePOCO
     {
         public Guid EmployeeId { get; set; }
         public DateTime BirthDate { get; set; }
@@ -13,5 +13,6 @@ namespace HospitalIsa.BLL.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Specialization { get; set; }
+
     }
 }

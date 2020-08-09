@@ -21,25 +21,26 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Patient> _patientRepository;
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Clinic> _clinicRepository;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+        
 
         public UserService(IRepository<Patient> patientRepository,
                             IRepository<Employee> employeeRepository,
                             IRepository<User> userRepository,
+                            IRepository<Clinic> clinicRepository,
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
-                            IMapper mapper,
                             IConfiguration config)
         {
             _patientRepository = patientRepository;
             _employeeRepository = employeeRepository;
             _userRepository = userRepository;
+            _clinicRepository = clinicRepository;
             _signInManager = signInManager;
             _userManager = userManager;
-            _mapper = mapper;
             _config = config;
         }
         
@@ -83,10 +84,24 @@ namespace HospitalIsa.BLL.Services
                         BirthDate = model.BirthDate,
                         Email = model.Email,
                         EmployeeId = newUser.UserId,
-                        Specialization = model.Specialization
+                        Specialization = model.Specialization,
                     };
-                    await _employeeRepository.Create(newEmployee);
-                    return true;  
+                    try
+                    {
+                        var clinicToAddEmployee = _clinicRepository.Find(clinic => clinic.ClinicId.ToString().Equals(model.ClinicId.ToString())).FirstOrDefault();
+                        if (clinicToAddEmployee.Employees == null)
+                        {
+                            clinicToAddEmployee.Employees = new List<Employee>();
+                        }
+                        clinicToAddEmployee.Employees.Add(newEmployee);
+                        //await _clinicRepository.Update(clinicToAddEmployee);
+                        await _employeeRepository.Create(newEmployee);
+                        return true;
+                    } catch (Exception e)
+                    {
+                        throw e;
+                    }
+                   
                 }
             }
             return false;
@@ -168,9 +183,10 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
         }
+
         public async Task<object> GetUserById(Guid id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = _userRepository.Find(u => u.UserId.Equals(id)).FirstOrDefault();
              if (await _userManager.IsInRoleAsync(user, "Pacijent"))
             {
                return  _patientRepository.Find(patient => patient.PatientId.Equals(id)).FirstOrDefault();

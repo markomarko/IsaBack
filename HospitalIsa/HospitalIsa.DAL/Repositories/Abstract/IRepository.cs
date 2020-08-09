@@ -11,7 +11,7 @@ namespace HospitalIsa.DAL.Repositories.Abstract
     {
         IEnumerable<E> GetAll();
         Task<bool> Create(E entity);
-        void Update(E entity);
+        Task<bool> Update(E entity);
         void Delete(E entity);
         IEnumerable<E> Find(Func<E, bool> predicate);
     }
