@@ -10,5 +10,6 @@ namespace HospitalIsa.BLL.Models
         public string Name { get; set; }
         public string Address { get; set; }
         public List<EmployeePOCO> Employees { get; set; }
+        public List<RoomPOCO> Rooms { get; set; }
     }
 }

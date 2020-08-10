@@ -61,6 +61,13 @@ namespace HospitalIsa.API.Controllers
             return await _clinicContract.GetClinicById(Guid.Parse(clinicId));
         }
 
-
+        [HttpPost]
+        [Route("AddRoomToClinic")]
+        public async Task<IActionResult> AddRoomToClinic([FromBody] RoomModel room)
+        {
+            var result = await _clinicContract.AddRoomToClinic(_mapper.Map<RoomModel, RoomPOCO>(room));
+            if (result) return Ok();
+            return BadRequest();
+        }
     }
 }

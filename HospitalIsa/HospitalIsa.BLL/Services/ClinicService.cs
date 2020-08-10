@@ -15,15 +15,18 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Clinic> _clinicRepository;
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IUserContract _userContract;
+        private readonly IRepository<Room> _roomRepository;
 
         public ClinicService(IRepository<Clinic> clinicRepository,
                                 IRepository<Employee> employeeRepository,
-                                IUserContract userContract
+                                IUserContract userContract,
+                                IRepository<Room> roomRepository
             )
         {
             _clinicRepository = clinicRepository;
             _employeeRepository = employeeRepository;
             _userContract = userContract;
+            _roomRepository = roomRepository;
         }
 
         public async Task<bool> AddClinic(ClinicPOCO clinic)
@@ -68,6 +71,30 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> GetClinicById(Guid id)
         {
          return  _clinicRepository.Find(clinic => clinic.ClinicId.Equals(id));
+        }
+
+        public async Task<bool> AddRoomToClinic(RoomPOCO room)
+        {
+            Room newRoom = new Room()
+            {
+                Name = room.Name,
+                Number = room.Number,
+            };
+            try
+            {
+                var clinicToAddRoom = _clinicRepository.Find(clinic => clinic.ClinicId.ToString().Equals(room.ClinicId.ToString())).FirstOrDefault();
+                if (clinicToAddRoom.Rooms == null)
+                {
+                    clinicToAddRoom.Rooms = new List<Room>();
+                }
+                clinicToAddRoom.Rooms.Add(newRoom);
+                await _roomRepository.Create(newRoom);
+                return true;
+            } catch (Exception e)
+            {
+                throw e;
+            }
+            
         }
     }
 }

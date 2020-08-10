@@ -72,6 +72,7 @@ namespace HospitalIsa
             services.AddScoped<IRepository<Patient>, Repository<Patient>>();
             services.AddScoped<IRepository<Employee>, Repository<Employee>>();
             services.AddScoped<IRepository<Clinic>, Repository<Clinic>>();
+            services.AddScoped<IRepository<Room>, Repository<Room>>(); //OVO MI JE FALILO PA MI NIJE POGADJAO CLINIC CONTROLER ???????
 
             services.AddCors();
             services.AddMvc();

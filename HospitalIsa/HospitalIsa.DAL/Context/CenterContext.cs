@@ -13,6 +13,7 @@ namespace HospitalIsa.DAL
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Clinic> Clinics { get; set; }
+        public DbSet<Room> Rooms { get; set; }
         public CenterContext(DbContextOptions<CenterContext> options) : base(options)
         {
 
