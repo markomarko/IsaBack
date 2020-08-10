@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200810110757_Rooms_ClinicListOfRooms")]
-    partial class Rooms_ClinicListOfRooms
+    [Migration("20200810214836_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,7 +40,9 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("EmployeeId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("BirthDate");
+                    b.Property<string>("Address");
+
+                    b.Property<string>("City");
 
                     b.Property<Guid?>("ClinicId");
 
@@ -54,6 +56,8 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("Specialization");
 
+                    b.Property<string>("State");
+
                     b.HasKey("EmployeeId");
 
                     b.HasIndex("ClinicId");
@@ -66,7 +70,9 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("PatientId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("BirthDate");
+                    b.Property<string>("Address");
+
+                    b.Property<string>("City");
 
                     b.Property<string>("Email");
 
@@ -75,6 +81,8 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<string>("Jmbg");
 
                     b.Property<string>("LastName");
+
+                    b.Property<string>("State");
 
                     b.HasKey("PatientId");
 

@@ -38,7 +38,9 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("EmployeeId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("BirthDate");
+                    b.Property<string>("Address");
+
+                    b.Property<string>("City");
 
                     b.Property<Guid?>("ClinicId");
 
@@ -52,6 +54,8 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("Specialization");
 
+                    b.Property<string>("State");
+
                     b.HasKey("EmployeeId");
 
                     b.HasIndex("ClinicId");
@@ -64,7 +68,9 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("PatientId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("BirthDate");
+                    b.Property<string>("Address");
+
+                    b.Property<string>("City");
 
                     b.Property<string>("Email");
 
@@ -73,6 +79,8 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<string>("Jmbg");
 
                     b.Property<string>("LastName");
+
+                    b.Property<string>("State");
 
                     b.HasKey("PatientId");
 

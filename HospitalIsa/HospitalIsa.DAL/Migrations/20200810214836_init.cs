@@ -66,11 +66,13 @@ namespace HospitalIsa.DAL.Migrations
                 columns: table => new
                 {
                     PatientId = table.Column<Guid>(nullable: false),
-                    BirthDate = table.Column<DateTime>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Jmbg = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true)
+                    Email = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    State = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -188,11 +190,13 @@ namespace HospitalIsa.DAL.Migrations
                 columns: table => new
                 {
                     EmployeeId = table.Column<Guid>(nullable: false),
-                    BirthDate = table.Column<DateTime>(nullable: false),
                     Jmbg = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    State = table.Column<string>(nullable: true),
                     Specialization = table.Column<string>(nullable: true),
                     ClinicId = table.Column<Guid>(nullable: true)
                 },
@@ -201,6 +205,26 @@ namespace HospitalIsa.DAL.Migrations
                     table.PrimaryKey("PK_Employees", x => x.EmployeeId);
                     table.ForeignKey(
                         name: "FK_Employees_Clinics_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinics",
+                        principalColumn: "ClinicId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    RoomId = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Number = table.Column<int>(nullable: false),
+                    ClinicId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.RoomId);
+                    table.ForeignKey(
+                        name: "FK_Rooms_Clinics_ClinicId",
                         column: x => x.ClinicId,
                         principalTable: "Clinics",
                         principalColumn: "ClinicId",
@@ -250,6 +274,11 @@ namespace HospitalIsa.DAL.Migrations
                 name: "IX_Employees_ClinicId",
                 table: "Employees",
                 column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_ClinicId",
+                table: "Rooms",
+                column: "ClinicId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -274,6 +303,9 @@ namespace HospitalIsa.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Patients");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
