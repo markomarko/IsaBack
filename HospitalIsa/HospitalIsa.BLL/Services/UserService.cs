@@ -69,9 +69,11 @@ namespace HospitalIsa.BLL.Services
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Jmbg = model.Jmbg,
-                        BirthDate = model.BirthDate,
                         Email = model.Email,
-                        PatientId = newUser.UserId
+                        PatientId = newUser.UserId,
+                        Address = model.Address,
+                        City = model.City,
+                        State = model.State
                     };
                     newUser.EmailConfirmed = false;
                     await _patientRepository.Create(newPatient);
@@ -84,10 +86,12 @@ namespace HospitalIsa.BLL.Services
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Jmbg = model.Jmbg,
-                        BirthDate = model.BirthDate,
                         Email = model.Email,
                         EmployeeId = newUser.UserId,
                         Specialization = model.Specialization,
+                        Address = model.Address,
+                        City = model.City,
+                        State = model.State
                     };
                     try
                     {

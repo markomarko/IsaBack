@@ -57,7 +57,8 @@ namespace HospitalIsa.BLL.Services
             try
             {
                 var clinicAdmin = await _userContract.GetUserById(adminId);
-                var result =  _clinicRepository.Find(clinic => clinic.Employees.Contains(clinicAdmin));
+                //ne radi kad je uneseno vise klinika*** da li mogu nekako da castujem da ocekuuje Employee
+                var result = _clinicRepository.Find(clinic => clinic.Employees.Contains(clinicAdmin)).First();
                 return result;
                // return await _clinicRepository.Find(clinic => clinic.Employees.Find(employee => employee.EmployeeId.Equals(adminId.ToString())));
             }
