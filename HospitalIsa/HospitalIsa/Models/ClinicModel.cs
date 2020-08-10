@@ -11,6 +11,7 @@ namespace HospitalIsa.API.Models
         public string Name { get; set; }
         public string Address { get; set; }
         public List<EmployeeModel> Employees { get; set; }
-        
+        public List<RoomModel> Rooms { get; set; }
+
     }
 }

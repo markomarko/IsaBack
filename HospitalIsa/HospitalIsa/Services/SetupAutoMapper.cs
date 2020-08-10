@@ -30,6 +30,8 @@ namespace HospitalIsa.API.Services
             CreateMap<PatientPOCO, PatientModel>();
             CreateMap<EmployeeModel, EmployeePOCO>();
             CreateMap<EmployeePOCO, EmployeeModel>();
+            CreateMap<RoomModel, RoomPOCO>();
+            CreateMap<RoomPOCO, RoomModel>();
 
             //relation BLL <=> DAL
             CreateMap<RegisterPOCO, User>();
@@ -38,6 +40,10 @@ namespace HospitalIsa.API.Services
             CreateMap<Patient, PatientPOCO>();
             CreateMap<EmployeePOCO, Employee>();
             CreateMap<Employee, EmployeePOCO>();
+            CreateMap<ClinicPOCO, Clinic>();
+            CreateMap<Clinic, ClinicPOCO>();
+            CreateMap<RoomPOCO, Room>();
+            CreateMap<Room, RoomPOCO>();
 
         }
        

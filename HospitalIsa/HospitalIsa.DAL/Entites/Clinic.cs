@@ -10,5 +10,6 @@ namespace HospitalIsa.DAL.Entites
         public string Name { get; set; }
         public string Address { get; set; }
         public List<Employee> Employees { get; set; }
+        public List<Room> Rooms { get; set; }
     }
 }
