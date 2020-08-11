@@ -33,14 +33,14 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("AddClinic")]
-        public async Task<IActionResult> AddClinic([FromBody] ClinicModel clinic)
+        public async Task<bool> AddClinic([FromBody] ClinicModel clinic)
         {
             var result = await _clinicContract.AddClinic(_mapper.Map<ClinicModel, ClinicPOCO>(clinic));
             if (result)
             {
-                return Ok();
+                return true;
             }
-            return BadRequest();
+            return false;
         }
 
         [HttpGet]
@@ -63,11 +63,11 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("AddRoomToClinic")]
-        public async Task<IActionResult> AddRoomToClinic([FromBody] RoomModel room)
+        public async Task<bool> AddRoomToClinic([FromBody] RoomModel room)
         {
             var result = await _clinicContract.AddRoomToClinic(_mapper.Map<RoomModel, RoomPOCO>(room));
-            if (result) return Ok();
-            return BadRequest();
+            if (result) return true;
+            return false;
         }
     }
 }

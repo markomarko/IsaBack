@@ -42,14 +42,14 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<bool> Register([FromBody] RegisterModel model)
         {
             var result = await _userContract.RegisterUser(_mapper.Map<RegisterModel, RegisterPOCO>(model));
             if (result)
             {
-                return Ok();
+                return true;
             }
-            return BadRequest();
+            return false;
         }
 
         [HttpPost]
@@ -66,15 +66,15 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("AcceptPatientRegisterRequest")]
-        public async Task<IActionResult> AcceptPatientRegisterRequest(MailModel mail)
+        public async Task<bool> AcceptPatientRegisterRequest(MailModel mail)
         {
             var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
             if (await _userContract.AcceptPatientRegisterRequest(mailModel))
             {
                 ms.SendEmail(mailModel);
-                return Ok();
+                return true;
             }
-            return BadRequest();
+            return false;
         }
 
         [HttpPost]

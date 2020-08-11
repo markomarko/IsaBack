@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HospitalIsa.DAL.Entities;
 
 namespace HospitalIsa.API.Models
 {
