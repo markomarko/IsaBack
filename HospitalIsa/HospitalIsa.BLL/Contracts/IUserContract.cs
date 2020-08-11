@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using HospitalIsa.DAL.Entities;
 
 namespace HospitalIsa.BLL.Contracts
 {
@@ -16,5 +17,6 @@ namespace HospitalIsa.BLL.Contracts
         Task<bool> AcceptPatientRegisterRequest(MailPOCO mail);
         Task<bool> DenyPatientRegisterRequest(MailPOCO mail);
         Task<object> GetUserById(Guid Id);
+        Task<List<string>> GetAllSpecializations();
     }
 }

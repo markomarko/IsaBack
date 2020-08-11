@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hospital.MailService;
+using HospitalIsa.DAL.Entities;
 
 namespace HospitalIsa.API.Controllers
 {
@@ -49,27 +50,41 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("UpdatePatient")]
-        public async Task<IActionResult> UpdatePatient([FromBody] PatientModel patient)
+        public async Task<bool> UpdatePatient([FromBody] PatientModel patient)
         {
             var result = await _userContract.UpdatePatient(_mapper.Map<PatientModel, PatientPOCO> (patient));
             if (result)
             {
-                return Ok();
+                return true;
             }
             else 
             {
-                return BadRequest();
+                return true;
             }
         }
         
         [HttpPost]
         [Route("UpdateEmployee")]
-        public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeModel employee)
+        public async Task<bool> UpdateEmployee([FromBody] EmployeeModel employee)
         {
             var result = await _userContract.UpdateEmployee(_mapper.Map<EmployeeModel, EmployeePOCO>(employee));
-            if (result) return Ok();
-                        return BadRequest();
+            if (result) return true;
+                        return false;
             
+        }
+        
+        [HttpGet]
+        [Route("GetAllSpecializations")]
+        public async Task<List<string>> GetAllSpecializations()
+        {
+            try
+            {
+                var result = await _userContract.GetAllSpecializations();
+                return result;
+            }catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

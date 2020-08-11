@@ -13,6 +13,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using HospitalIsa.DAL.Entities;
+using Newtonsoft.Json;
 
 namespace HospitalIsa.BLL.Services
 {
@@ -53,12 +55,12 @@ namespace HospitalIsa.BLL.Services
             {
                 Email = model.Email,
                 UserName = (model.Email.Split('@')).First(),
-                UserId = Guid.NewGuid(),
+                
                 EmailConfirmed = true
             };
 
             var result = await _userManager.CreateAsync(newUser, model.Password);
-
+            newUser.UserId = Guid.Parse(newUser.Id);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(newUser, model.UserRole);
@@ -161,7 +163,7 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> GetRegisterRequests()
         {
             IEnumerable<User> users = _userRepository.GetAll();
-            var results = users.Where(x => x.EmailConfirmed.Equals(false)).ToList();
+            var results = users.Where(user => user.EmailConfirmed.Equals(false)).ToList();
             return results;
         }
         public async Task<bool> AcceptPatientRegisterRequest(MailPOCO mail)
@@ -225,6 +227,13 @@ namespace HospitalIsa.BLL.Services
             await _employeeRepository.Delete(deleteEmployee); var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
             if (result) return true;
                         return false;
+        }
+        public async Task<List<string>> GetAllSpecializations()
+        {
+            Specialization specializations = new Specialization();
+            var allSpecializations = specializations.GetList() ;
+            return allSpecializations; 
+            
         }
     }
 }

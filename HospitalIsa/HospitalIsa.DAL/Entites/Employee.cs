@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using HospitalIsa.DAL.Entities;
+
 namespace HospitalIsa.DAL.Entites
 {
     public class Employee
@@ -15,7 +17,6 @@ namespace HospitalIsa.DAL.Entites
         public string City { get; set; }
         public string State { get; set; }
         public string Specialization { get; set; }
-
 
     }
 }
