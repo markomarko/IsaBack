@@ -37,17 +37,27 @@ namespace HospitalIsa.DAL.Repositories
             return true;
         }
 
-        public void Delete(E entity)
+        public async Task<bool> Delete(E entity)
         {
-            _dbSet.Remove(entity);
+            try
+            {
+                _dbSet.Remove(entity); 
+                await _centerContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return false;
+                throw e;
+            }
+
+            return true;
         }
 
         public IEnumerable<E> Find(Func<E, bool> predicate)
         {
             return _dbSet.Where(predicate);
-        }
 
-       
+        }
 
         public  IEnumerable<E> GetAll()
         {
@@ -58,8 +68,9 @@ namespace HospitalIsa.DAL.Repositories
         {
             try
             {
-                _dbSet.Remove(entity);
-                await _centerContext.SaveChangesAsync();
+                
+                //await _centerContext.SaveChangesAsync();
+
                 await _dbSet.AddAsync(entity);
                 await _centerContext.SaveChangesAsync();
 

@@ -200,17 +200,19 @@ namespace HospitalIsa.BLL.Services
             var user = _userRepository.Find(u => u.UserId.Equals(id)).FirstOrDefault();
              if (await _userManager.IsInRoleAsync(user, "Patient"))
             {
-               return  _patientRepository.Find(patient => patient.PatientId.Equals(id)).FirstOrDefault();
+               return  _patientRepository.Find(patient => patient.PatientId.Equals(id)).First();
             } else
             {
-               return _employeeRepository.Find(employee => employee.EmployeeId.Equals(id)).FirstOrDefault();
+               return _employeeRepository.Find(employee => employee.EmployeeId.Equals(id)).First();
             }
             
         }
 
         public async Task<bool> UpdatePatient(PatientPOCO patient)
         {
-            var result = await _patientRepository.Update(_mapper.Map<PatientPOCO, Patient>(patient));
+            Patient deletePatient = _patientRepository.Find(p => p.Email.Equals(patient.Email)).First(); 
+            await _patientRepository.Delete(deletePatient);
+            var result = await _patientRepository.Create(_mapper.Map<PatientPOCO, Patient>(patient));
             if (result)
             {
                 return true;
@@ -219,7 +221,8 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<bool> UpdateEmployee(EmployeePOCO employee)
         {
-            var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
+            Employee deleteEmployee = _employeeRepository.Find(p => p.Email.Equals(employee.Email)).First(); ;
+            await _employeeRepository.Delete(deleteEmployee); var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
             if (result) return true;
                         return false;
         }
