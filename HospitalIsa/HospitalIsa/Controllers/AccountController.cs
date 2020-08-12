@@ -79,15 +79,15 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("DenyPatientRegisterRequest")]
-        public async Task<IActionResult> DenyPatientRegisterRequest(MailModel mail)
+        public async Task<bool> DenyPatientRegisterRequest(MailModel mail)
         {
             var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
             if (await _userContract.DenyPatientRegisterRequest(mailModel))
             {
                 ms.SendEmail(mailModel);
-                return Ok();
+                return true;
             }
-            return BadRequest(); 
+            return false; 
         }
     }
 }
