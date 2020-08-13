@@ -9,7 +9,11 @@ namespace HospitalIsa.DAL.Entites
         public Guid ClinicId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
+        public string About { get; set; }
         public List<Employee> Employees { get; set; }
         public List<Room> Rooms { get; set; }
+        public List<Review> Review { get; set; }
+        public double AverageMark { get; set; }
+        public List<Pricelist> PriceList { get; set; }
     }
 }

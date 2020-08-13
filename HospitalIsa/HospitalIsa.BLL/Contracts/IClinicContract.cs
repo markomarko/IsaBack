@@ -12,6 +12,6 @@ namespace HospitalIsa.BLL.Contracts
         Task<bool> AddRoomToClinic(RoomPOCO room);
         Task<object> GetAllClinics();
         Task<object> GetClinicByAdminId(Guid adminId);
-        Task<object> GetClinicById(Guid id);
+        Task<object> GetPriceList(Guid clinicId);
     }
 }

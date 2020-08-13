@@ -54,7 +54,9 @@ namespace HospitalIsa.DAL.Migrations
                 {
                     ClinicId = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(nullable: true)
+                    Address = table.Column<string>(nullable: true),
+                    About = table.Column<string>(nullable: true),
+                    AverageMark = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -212,6 +214,47 @@ namespace HospitalIsa.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pricelist",
+                columns: table => new
+                {
+                    PriceListId = table.Column<Guid>(nullable: false),
+                    ExaminationType = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    Discount = table.Column<double>(nullable: false),
+                    ClinicId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pricelist", x => x.PriceListId);
+                    table.ForeignKey(
+                        name: "FK_Pricelist_Clinics_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinics",
+                        principalColumn: "ClinicId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Review",
+                columns: table => new
+                {
+                    ReviewId = table.Column<Guid>(nullable: false),
+                    Mark = table.Column<int>(nullable: false),
+                    Comment = table.Column<string>(nullable: true),
+                    ClinicId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Review", x => x.ReviewId);
+                    table.ForeignKey(
+                        name: "FK_Review_Clinics_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinics",
+                        principalColumn: "ClinicId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
@@ -276,6 +319,16 @@ namespace HospitalIsa.DAL.Migrations
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pricelist_ClinicId",
+                table: "Pricelist",
+                column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Review_ClinicId",
+                table: "Review",
+                column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rooms_ClinicId",
                 table: "Rooms",
                 column: "ClinicId");
@@ -303,6 +356,12 @@ namespace HospitalIsa.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Patients");
+
+            migrationBuilder.DropTable(
+                name: "Pricelist");
+
+            migrationBuilder.DropTable(
+                name: "Review");
 
             migrationBuilder.DropTable(
                 name: "Rooms");

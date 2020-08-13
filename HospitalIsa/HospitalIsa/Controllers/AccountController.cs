@@ -51,19 +51,15 @@ namespace HospitalIsa.API.Controllers
             }
             return false;
         }
-
         [HttpPost]
         [Route("Login")]
         public async Task<object> Login([FromBody] LoginModel model)
         {
             return await _userContract.LoginUser(_mapper.Map<LoginModel, LoginPOCO>(model));
         }
-        
         [HttpGet]
         [Route("GetRegisterRequests")]
         public async Task<object> GetRegisterRequests() => await _userContract.GetRegisterRequests();
-      
-
         [HttpPost]
         [Route("AcceptPatientRegisterRequest")]
         public async Task<bool> AcceptPatientRegisterRequest(MailModel mail)
@@ -76,7 +72,6 @@ namespace HospitalIsa.API.Controllers
             }
             return false;
         }
-
         [HttpPost]
         [Route("DenyPatientRegisterRequest")]
         public async Task<bool> DenyPatientRegisterRequest(MailModel mail)
@@ -88,6 +83,12 @@ namespace HospitalIsa.API.Controllers
                 return true;
             }
             return false; 
+        }
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<bool> ChangePassword([FromBody] RegisterModel user)
+        {
+            return true;
         }
     }
 }
