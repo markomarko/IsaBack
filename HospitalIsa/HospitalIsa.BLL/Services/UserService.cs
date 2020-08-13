@@ -128,7 +128,6 @@ namespace HospitalIsa.BLL.Services
                 return null;
             }
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-
             if (result.Succeeded)
             {
 
@@ -196,7 +195,6 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
         }
-
         public async Task<object> GetUserById(Guid id)
         {
             var user = _userRepository.Find(u => u.UserId.Equals(id)).FirstOrDefault();

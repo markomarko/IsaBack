@@ -6,7 +6,7 @@ namespace HospitalIsa.DAL.Entities
 {
     public class Specialization
     {
-        private List<string> Specializations = new List<string>(new[] {
+        public List<string> Specializations = new List<string>(new[] {
                 "Psychiatrist", 
                 "Cardiologist",
                 "Dermatologist",

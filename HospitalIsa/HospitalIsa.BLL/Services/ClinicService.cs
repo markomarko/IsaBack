@@ -16,17 +16,20 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IUserContract _userContract;
         private readonly IRepository<Room> _roomRepository;
+        private readonly IRepository<Pricelist> _priceListRepository;
 
         public ClinicService(IRepository<Clinic> clinicRepository,
                                 IRepository<Employee> employeeRepository,
                                 IUserContract userContract,
-                                IRepository<Room> roomRepository
+                                IRepository<Room> roomRepository,
+                                IRepository<Pricelist> priceListRepository
             )
         {
             _clinicRepository = clinicRepository;
             _employeeRepository = employeeRepository;
             _userContract = userContract;
             _roomRepository = roomRepository;
+            _priceListRepository = priceListRepository;
         }
 
         public async Task<bool> AddClinic(ClinicPOCO clinic)
@@ -57,10 +60,8 @@ namespace HospitalIsa.BLL.Services
             try
             {
                 var clinicAdmin = await _userContract.GetUserById(adminId);
-                //ne radi kad je uneseno vise klinika*** da li mogu nekako da castujem da ocekuuje Employee
-                var result = _clinicRepository.Find(clinic => clinic.Employees.Contains(clinicAdmin)).First();
+               var result = _clinicRepository.Find(clinic => clinic.Employees.Contains(clinicAdmin)).First();
                 return result;
-               // return await _clinicRepository.Find(clinic => clinic.Employees.Find(employee => employee.EmployeeId.Equals(adminId.ToString())));
             }
             catch (Exception e)
             {
@@ -69,10 +70,6 @@ namespace HospitalIsa.BLL.Services
 
         }
 
-        public async Task<object> GetClinicById(Guid id)
-        {
-         return  _clinicRepository.Find(clinic => clinic.ClinicId.Equals(id));
-        }
 
         public async Task<bool> AddRoomToClinic(RoomPOCO room)
         {
@@ -96,6 +93,14 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
             
+        }
+        public async Task<object> GetPriceList(Guid adminId)
+        {
+            var obj = await GetClinicByAdminId(adminId);
+            Clinic clinic = obj as Clinic;
+
+            return _priceListRepository.Find(price => price.ClinicId.Equals(clinic.ClinicId)).ToList();
+
         }
     }
 }
