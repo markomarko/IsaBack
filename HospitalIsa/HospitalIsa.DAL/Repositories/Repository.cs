@@ -68,10 +68,8 @@ namespace HospitalIsa.DAL.Repositories
         {
             try
             {
-                
-                //await _centerContext.SaveChangesAsync();
 
-                await _dbSet.AddAsync(entity);
+                //await _centerContext.SaveChangesAsync();
                 await _centerContext.SaveChangesAsync();
 
                 return true;

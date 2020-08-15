@@ -44,6 +44,7 @@ namespace HospitalIsa.API.Controllers
         [Route("Register")]
         public async Task<bool> Register([FromBody] RegisterModel model)
         {
+
             var result = await _userContract.RegisterUser(_mapper.Map<RegisterModel, RegisterPOCO>(model));
             if (result)
             {
@@ -60,6 +61,7 @@ namespace HospitalIsa.API.Controllers
         [HttpGet]
         [Route("GetRegisterRequests")]
         public async Task<object> GetRegisterRequests() => await _userContract.GetRegisterRequests();
+        
         [HttpPost]
         [Route("AcceptPatientRegisterRequest")]
         public async Task<bool> AcceptPatientRegisterRequest(MailModel mail)
@@ -84,11 +86,34 @@ namespace HospitalIsa.API.Controllers
             }
             return false; 
         }
+
+        [HttpGet]
+        [Route("CheckIfSignedBefore/{userId}")]
+        public async Task<bool> CheckIfSignedBefore([FromRoute] string userId)
+        {
+            if (await _userContract.CheckIfSignedBefore(userId))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        [HttpPost]
+        [Route("SendMail")]
+        public async Task<bool> SendMail([FromBody]MailModel mail)
+        {
+            var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
+                ms.SendEmail(mailModel);
+                return true;
+                
+        }
+
         [HttpPost]
         [Route("ChangePassword")]
-        public async Task<bool> ChangePassword([FromBody] RegisterModel user)
+        public async Task<bool> ChangePassword([FromBody] ChangePasswordModel changePasswordModel)
         {
-            return true;
+            var changePassword = _mapper.Map<ChangePasswordModel, ChangePasswordPOCO>(changePasswordModel);
+            return (await _userContract.ChangePassword(changePassword));
         }
     }
 }

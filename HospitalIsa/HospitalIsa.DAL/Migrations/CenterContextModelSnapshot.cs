@@ -180,6 +180,8 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<bool>("SignedBefore");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<Guid>("UserId");
