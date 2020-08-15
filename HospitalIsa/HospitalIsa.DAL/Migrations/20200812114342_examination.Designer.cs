@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200810214836_init")]
-    partial class init
+    [Migration("20200812114342_examination")]
+    partial class examination
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -63,6 +63,34 @@ namespace HospitalIsa.DAL.Migrations
                     b.HasIndex("ClinicId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Examination", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateTime");
+
+                    b.Property<double>("Discount");
+
+                    b.Property<Guid>("DoctorId");
+
+                    b.Property<TimeSpan>("Duration");
+
+                    b.Property<bool>("PreDefined");
+
+                    b.Property<double>("Price");
+
+                    b.Property<Guid>("RoomId");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("Examinations");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Patient", b =>
@@ -275,6 +303,14 @@ namespace HospitalIsa.DAL.Migrations
                     b.HasOne("HospitalIsa.DAL.Entites.Clinic")
                         .WithMany("Employees")
                         .HasForeignKey("ClinicId");
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Examination", b =>
+                {
+                    b.HasOne("HospitalIsa.DAL.Entites.Employee", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Room", b =>

@@ -4,14 +4,16 @@ using HospitalIsa.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    partial class CenterContextModelSnapshot : ModelSnapshot
+    [Migration("20200812162909_examinationPatientId")]
+    partial class examinationPatientId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +44,7 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("City");
 
-                    b.Property<Guid>("ClinicId");
+                    b.Property<Guid?>("ClinicId");
 
                     b.Property<string>("Email");
 
@@ -302,8 +304,7 @@ namespace HospitalIsa.DAL.Migrations
                 {
                     b.HasOne("HospitalIsa.DAL.Entites.Clinic")
                         .WithMany("Employees")
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ClinicId");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Examination", b =>

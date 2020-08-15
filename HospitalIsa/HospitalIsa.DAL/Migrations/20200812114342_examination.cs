@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HospitalIsa.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class examination : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -231,6 +231,31 @@ namespace HospitalIsa.DAL.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Examinations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateTime = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<TimeSpan>(nullable: false),
+                    RoomId = table.Column<Guid>(nullable: false),
+                    DoctorId = table.Column<Guid>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    Discount = table.Column<double>(nullable: false),
+                    PreDefined = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Examinations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Examinations_Employees_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -276,6 +301,11 @@ namespace HospitalIsa.DAL.Migrations
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Examinations_DoctorId",
+                table: "Examinations",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rooms_ClinicId",
                 table: "Rooms",
                 column: "ClinicId");
@@ -299,7 +329,7 @@ namespace HospitalIsa.DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Examinations");
 
             migrationBuilder.DropTable(
                 name: "Patients");
@@ -312,6 +342,9 @@ namespace HospitalIsa.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Clinics");

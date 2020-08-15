@@ -67,12 +67,14 @@ namespace HospitalIsa
 
             services.AddScoped<IUserContract, UserService>();
             services.AddScoped<IClinicContract, ClinicService>();
+            services.AddScoped<IExaminationContract, ExaminationService>();
 
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Patient>, Repository<Patient>>();
             services.AddScoped<IRepository<Employee>, Repository<Employee>>();
             services.AddScoped<IRepository<Clinic>, Repository<Clinic>>();
-            services.AddScoped<IRepository<Room>, Repository<Room>>(); //OVO MI JE FALILO PA MI NIJE POGADJAO CLINIC CONTROLER ???????
+            services.AddScoped<IRepository<Examination>, Repository<Examination>>(); //OVO MI JE FALILO PA MI NIJE POGADJAO CLINIC CONTROLER ???????
+            services.AddScoped<IRepository<Room>, Repository<Room>>();
 
             services.AddCors();
             services.AddMvc();
