@@ -59,8 +59,8 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var clinicAdmin = await _userContract.GetUserById(adminId);
-               var result = _clinicRepository.Find(clinic => clinic.Employees.Contains(clinicAdmin)).First();
+                var clinicAdmin = await _userContract.GetUserById(adminId) as Employee;
+               var result = _clinicRepository.Find(clinic => clinic.ClinicId.Equals(clinicAdmin.ClinicId)).First();
                 return result;
             }
             catch (Exception e)

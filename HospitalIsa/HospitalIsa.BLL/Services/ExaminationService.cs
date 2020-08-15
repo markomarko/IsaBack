@@ -37,6 +37,23 @@ namespace HospitalIsa.BLL.Services
             _mapper = mapper;
         }
 
+        public async Task<bool> AcceptExaminationRequest(RoomExaminationPOCO roomExaminationPOCO)
+        {
+            try
+            {
+                var Examination = _examinationRepository.Find(x => x.Id.Equals(roomExaminationPOCO.ExaminationId)).First();
+                Examination.Approved = true;
+                Examination.RoomId = roomExaminationPOCO.RoomId;
+                await _examinationRepository.Update(Examination);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+                return false;
+            }
+        }
+
         public async Task<bool> AddExamination(ExaminationPOCO examinationPOCO)
         {
             var newExamination = new Examination()
@@ -44,8 +61,9 @@ namespace HospitalIsa.BLL.Services
                 Id = Guid.NewGuid(),
                 DateTime = examinationPOCO.DateTime,
                // Doctor = _mapper.Map<EmployeePOCO, Employee>(examinationPOCO.Doctor),
-                DoctorId = examinationPOCO.Doctor.EmployeeId,
-                PatientId = examinationPOCO.PatientId
+                DoctorId = examinationPOCO.DoctorId,
+                PatientId = examinationPOCO.PatientId,
+                Approved = false
                 
             };
 
@@ -81,6 +99,13 @@ namespace HospitalIsa.BLL.Services
 
         }
 
+        public async Task<object> GetExaminationRequests()
+        {
+            IEnumerable<Examination> examinationRequests = _examinationRepository.GetAll();
+            List<Examination> results = examinationRequests.Where(x => x.Approved.Equals(false)).ToList();
+            return results;
+        }
+
         public async Task<object> GetFreeExaminationAndDoctorByClinic(Guid idClinic, string type, DateTime dateTime)
         {
             List<DoctorsFreeExaminationsPOCO> result = new List<DoctorsFreeExaminationsPOCO>();
@@ -103,7 +128,7 @@ namespace HospitalIsa.BLL.Services
             foreach(var doctor in doctors)
             {
                 List<Examination> examinationsOfSpecificDoctor = new List<Examination>();
-                examinationsOfSpecificDoctor=_examinationRepository.Find(x => x.Doctor.Equals(doctor)).ToList();
+                examinationsOfSpecificDoctor=_examinationRepository.Find(x => x.DoctorId.Equals(doctor.EmployeeId)).ToList();
                  // zauzeti pregledi za odredjenog doktora
                 var freeExaminations = GenerateFreeExamination(examinationsOfSpecificDoctor, dateTime);
                 DoctorsFreeExaminationsPOCO res = new DoctorsFreeExaminationsPOCO();

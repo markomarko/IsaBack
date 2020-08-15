@@ -10,8 +10,12 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200812114342_examination")]
-    partial class examination
+<<<<<<< Updated upstream:HospitalIsa/HospitalIsa.DAL/Migrations/20200815003739_init.Designer.cs
+    [Migration("20200815003739_init")]
+=======
+    [Migration("20200815125800_init")]
+>>>>>>> Stashed changes:HospitalIsa/HospitalIsa.DAL/Migrations/20200815125800_init.Designer.cs
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +30,11 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("ClinicId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("About");
+
                     b.Property<string>("Address");
+
+                    b.Property<double>("AverageMark");
 
                     b.Property<string>("Name");
 
@@ -44,7 +52,7 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("City");
 
-                    b.Property<Guid?>("ClinicId");
+                    b.Property<Guid>("ClinicId");
 
                     b.Property<string>("Email");
 
@@ -77,6 +85,8 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("DoctorId");
 
                     b.Property<TimeSpan>("Duration");
+
+                    b.Property<Guid>("PatientId");
 
                     b.Property<bool>("PreDefined");
 
@@ -115,6 +125,44 @@ namespace HospitalIsa.DAL.Migrations
                     b.HasKey("PatientId");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Pricelist", b =>
+                {
+                    b.Property<Guid>("PriceListId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ClinicId");
+
+                    b.Property<double>("Discount");
+
+                    b.Property<string>("ExaminationType");
+
+                    b.Property<double>("Price");
+
+                    b.HasKey("PriceListId");
+
+                    b.HasIndex("ClinicId");
+
+                    b.ToTable("Pricelist");
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Review", b =>
+                {
+                    b.Property<Guid>("ReviewId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("ClinicId");
+
+                    b.Property<string>("Comment");
+
+                    b.Property<int>("Mark");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("ClinicId");
+
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Room", b =>
@@ -167,6 +215,8 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
+
+                    b.Property<bool>("SignedBefore");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -302,7 +352,8 @@ namespace HospitalIsa.DAL.Migrations
                 {
                     b.HasOne("HospitalIsa.DAL.Entites.Clinic")
                         .WithMany("Employees")
-                        .HasForeignKey("ClinicId");
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Examination", b =>
@@ -311,6 +362,21 @@ namespace HospitalIsa.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Pricelist", b =>
+                {
+                    b.HasOne("HospitalIsa.DAL.Entites.Clinic")
+                        .WithMany("PriceList")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Review", b =>
+                {
+                    b.HasOne("HospitalIsa.DAL.Entites.Clinic")
+                        .WithMany("Review")
+                        .HasForeignKey("ClinicId");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Room", b =>

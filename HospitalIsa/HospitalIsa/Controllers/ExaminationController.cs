@@ -55,5 +55,22 @@ namespace HospitalIsa.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetExaminationRequests")]
+        public async Task<object> GetExaminationRequests() => await _examinationContract.GetExaminationRequests();
+
+        [HttpPost]
+        [Route("AcceptExaminationRequest")]
+        public async Task<bool> AcceptExaminationRequest(RoomExaminationModel model)
+        {
+           
+            if (await _examinationContract.AcceptExaminationRequest(_mapper.Map<RoomExaminationModel, RoomExaminationPOCO> (model)))
+            {
+                //ms.SendEmail(mailModel);
+                return true;
+            }
+            return false;
+        }
+
     }
 }
