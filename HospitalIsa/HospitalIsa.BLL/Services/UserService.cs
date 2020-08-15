@@ -55,7 +55,6 @@ namespace HospitalIsa.BLL.Services
             {
                 Email = model.Email,
                 UserName = (model.Email.Split('@')).First(),
-                
                 EmailConfirmed = true
             };
 
@@ -119,13 +118,45 @@ namespace HospitalIsa.BLL.Services
             }
             return false;
         }
+        public async Task<bool> CheckIfSignedBefore(string userId)
+        {
+            try
+            {
+                
+                var user = await  _userManager.FindByIdAsync(userId);
+
+                if (user.SignedBefore)
+                {
+                    return true;
+                }
+                else
+                {
+                    if (await _userManager.IsInRoleAsync(user, "Patient"))
+                    {
+                        return true;
+                    }
+                }
+            } catch (Exception e )
+            {
+                throw e;
+            }
+            return false;
+        }
         public async Task<object> LoginUser(LoginPOCO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
 
-            if (!user.EmailConfirmed)
+            try
+            {
+                if (!user.EmailConfirmed)
+                {
+
+                    return null;
+                }
+            } catch (Exception e)
             {
                 return null;
+                throw e; 
             }
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (result.Succeeded)
@@ -158,6 +189,24 @@ namespace HospitalIsa.BLL.Services
                 return results;
             }
             return null;
+        }
+        public async Task<bool> ChangePassword(ChangePasswordPOCO changePassword)
+        {
+            var user = await _userManager.FindByIdAsync(changePassword.userId.ToString());
+            try
+            {
+                var result = await _userManager.ChangePasswordAsync(user, changePassword.oldPassword, changePassword.newPassword);
+                if (result.Succeeded)
+                {
+                    user.SignedBefore = true;
+                    await _userRepository.Update(user);
+                    return true;
+                } return false;
+            } catch (Exception e)
+            {
+                return false;
+                throw e;
+            }
         }
         public async Task<object> GetRegisterRequests()
         {

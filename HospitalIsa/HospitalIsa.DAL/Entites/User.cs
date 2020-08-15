@@ -9,7 +9,8 @@ namespace HospitalIsa.DAL.Entites
     public class User : IdentityUser 
     {
         public Guid UserId { get; set; }
-
+        
+        public bool SignedBefore { get; set; }
         
     }
 }

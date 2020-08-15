@@ -7,5 +7,6 @@ namespace HospitalIsa.BLL.Models
     public class UserPOCO 
     {
         public Guid UserId { get; set; }
+        public bool SignedBefore { get; set; }
     }
 }

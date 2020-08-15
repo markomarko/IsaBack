@@ -36,7 +36,7 @@ namespace Hospital.DAL
                         UserName = "Gaja",
                         Email = "markogajicgaja@gmail.com",
                         EmailConfirmed = true,
-                        UserId = Guid.NewGuid()
+                        SignedBefore = true
                     };
 
 
@@ -52,6 +52,7 @@ namespace Hospital.DAL
                     {
                         throw new InvalidOperationException("Could not create new user in seeder");
                     }
+                    admin.UserId = Guid.Parse(admin.Id);
 
 
 
