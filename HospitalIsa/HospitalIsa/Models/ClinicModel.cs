@@ -16,7 +16,7 @@ namespace HospitalIsa.API.Models
         public List<RoomModel> Rooms { get; set; }
         public List<ReviewModel> Review { get; set; }
         public double AverageMark { get; set; }
-        public List<Pricelist> PriceList { get; set; }
+        public List<Price> PriceList { get; set; }
 
     }
 }

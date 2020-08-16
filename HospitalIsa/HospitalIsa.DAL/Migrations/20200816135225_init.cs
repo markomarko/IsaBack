@@ -65,6 +65,27 @@ namespace HospitalIsa.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Examinations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateTime = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<TimeSpan>(nullable: false),
+                    RoomId = table.Column<Guid>(nullable: false),
+                    DoctorId = table.Column<Guid>(nullable: false),
+                    PatientId = table.Column<Guid>(nullable: false),
+                    Approved = table.Column<bool>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    Discount = table.Column<double>(nullable: false),
+                    PreDefined = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Examinations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Patients",
                 columns: table => new
                 {
@@ -215,20 +236,21 @@ namespace HospitalIsa.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pricelist",
+                name: "Prices",
                 columns: table => new
                 {
-                    PriceListId = table.Column<Guid>(nullable: false),
+                    PriceId = table.Column<Guid>(nullable: false),
                     ExaminationType = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: false),
+                    PriceValue = table.Column<double>(nullable: false),
                     Discount = table.Column<double>(nullable: false),
+                    DiscountedPrice = table.Column<double>(nullable: false),
                     ClinicId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pricelist", x => x.PriceListId);
+                    table.PrimaryKey("PK_Prices", x => x.PriceId);
                     table.ForeignKey(
-                        name: "FK_Pricelist_Clinics_ClinicId",
+                        name: "FK_Prices_Clinics_ClinicId",
                         column: x => x.ClinicId,
                         principalTable: "Clinics",
                         principalColumn: "ClinicId",
@@ -273,32 +295,6 @@ namespace HospitalIsa.DAL.Migrations
                         principalTable: "Clinics",
                         principalColumn: "ClinicId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Examinations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    DateTime = table.Column<DateTime>(nullable: false),
-                    Duration = table.Column<TimeSpan>(nullable: false),
-                    RoomId = table.Column<Guid>(nullable: false),
-                    DoctorId = table.Column<Guid>(nullable: false),
-                    PatientId = table.Column<Guid>(nullable: false),
-                    Type = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: false),
-                    Discount = table.Column<double>(nullable: false),
-                    PreDefined = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Examinations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Examinations_Employees_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "Employees",
-                        principalColumn: "EmployeeId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -346,13 +342,8 @@ namespace HospitalIsa.DAL.Migrations
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Examinations_DoctorId",
-                table: "Examinations",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pricelist_ClinicId",
-                table: "Pricelist",
+                name: "IX_Prices_ClinicId",
+                table: "Prices",
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
@@ -384,13 +375,16 @@ namespace HospitalIsa.DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Employees");
+
+            migrationBuilder.DropTable(
                 name: "Examinations");
 
             migrationBuilder.DropTable(
                 name: "Patients");
 
             migrationBuilder.DropTable(
-                name: "Pricelist");
+                name: "Prices");
 
             migrationBuilder.DropTable(
                 name: "Review");
@@ -403,9 +397,6 @@ namespace HospitalIsa.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Clinics");

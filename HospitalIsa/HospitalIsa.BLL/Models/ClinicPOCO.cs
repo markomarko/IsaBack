@@ -15,6 +15,6 @@ namespace HospitalIsa.BLL.Models
         public List<RoomPOCO> Rooms { get; set; }
         public List<ReviewPOCO> Review { get; set; }
         public double AverageMark { get; set; }
-        public List<Pricelist> PriceList { get; set; }
+        public List<Price> PriceList { get; set; }
     }
 }

@@ -28,12 +28,14 @@ namespace HospitalIsa.BLL.Services
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly IRepository<Price> _priceListRepository;
 
 
         public UserService(IRepository<Patient> patientRepository,
                             IRepository<Employee> employeeRepository,
                             IRepository<User> userRepository,
                             IRepository<Clinic> clinicRepository,
+                            IRepository<Price> priceListReposiory,
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
                             IConfiguration config,
@@ -43,6 +45,7 @@ namespace HospitalIsa.BLL.Services
             _employeeRepository = employeeRepository;
             _userRepository = userRepository;
             _clinicRepository = clinicRepository;
+            _priceListRepository = priceListReposiory;
             _signInManager = signInManager;
             _userManager = userManager;
             _config = config;
@@ -92,7 +95,8 @@ namespace HospitalIsa.BLL.Services
                         Specialization = model.Specialization,
                         Address = model.Address,
                         City = model.City,
-                        State = model.State
+                        State = model.State,
+                        ClinicId = Guid.Parse(model.ClinicId)
                     };
                     try
                     {
@@ -105,6 +109,16 @@ namespace HospitalIsa.BLL.Services
                                 clinicToAddEmployee.Employees = new List<Employee>();
                             }
                             clinicToAddEmployee.Employees.Add(newEmployee);
+                            if(await _userManager.IsInRoleAsync(newUser, "Doctor"))
+                            {
+                                var newPrice = new Price()
+                                {
+                                    ExaminationType = newEmployee.Specialization,
+                                    ClinicId = newEmployee.ClinicId
+                                };
+                                await _priceListRepository.Create(newPrice);
+                            }
+                            
                         }
                             //await _clinicRepository.Update(clinicToAddEmployee);
                             await _employeeRepository.Create(newEmployee);
@@ -259,9 +273,9 @@ namespace HospitalIsa.BLL.Services
 
         public async Task<bool> UpdatePatient(PatientPOCO patient)
         {
-            Patient deletePatient = _patientRepository.Find(p => p.Email.Equals(patient.Email)).First(); 
-            await _patientRepository.Delete(deletePatient);
-            var result = await _patientRepository.Create(_mapper.Map<PatientPOCO, Patient>(patient));
+            //Patient deletePatient = _patientRepository.Find(p => p.Email.Equals(patient.Email)).First(); 
+            //await _patientRepository.Delete(deletePatient);
+            var result = await _patientRepository.Update(_mapper.Map<PatientPOCO, Patient>(patient));
             if (result)
             {
                 return true;
@@ -270,8 +284,10 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<bool> UpdateEmployee(EmployeePOCO employee)
         {
-            Employee deleteEmployee = _employeeRepository.Find(p => p.Email.Equals(employee.Email)).First(); ;
-            await _employeeRepository.Delete(deleteEmployee); var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
+            
+            //Employee deleteEmployee = _employeeRepository.Find(p => p.Email.Equals(employee.Email)).First(); ;
+           // await _employeeRepository.Delete(deleteEmployee); 
+            var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
             if (result) return true;
                         return false;
         }

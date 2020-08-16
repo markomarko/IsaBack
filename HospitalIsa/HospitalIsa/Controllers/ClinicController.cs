@@ -78,5 +78,17 @@ namespace HospitalIsa.API.Controllers
             }
            
         }
+
+        [HttpPost]
+        [Route("UpdatePrice")]
+        public async Task<bool> UpdatePrice([FromBody] PriceModel price)
+        {
+            if (await _clinicContract.UpdatePrice(_mapper.Map<PriceModel, PricePOCO>(price)))
+              {
+                return true;
+            }
+            return false;
+            
+        }
     }
 }

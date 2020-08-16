@@ -68,7 +68,6 @@ namespace HospitalIsa.DAL.Repositories
         {
             try
             {
-
                 //await _centerContext.SaveChangesAsync();
                 await _centerContext.SaveChangesAsync();
 
@@ -76,9 +75,10 @@ namespace HospitalIsa.DAL.Repositories
             }
             catch (Exception e)
             {
+                return false;
                 throw e;
             }
-            return false;
+            
 
 
         }
