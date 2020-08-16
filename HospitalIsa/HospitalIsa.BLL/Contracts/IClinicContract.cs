@@ -13,5 +13,6 @@ namespace HospitalIsa.BLL.Contracts
         Task<object> GetAllClinics();
         Task<object> GetClinicByAdminId(Guid adminId);
         Task<object> GetPriceList(Guid clinicId);
+        Task<bool> UpdatePrice(PricePOCO price);
     }
 }

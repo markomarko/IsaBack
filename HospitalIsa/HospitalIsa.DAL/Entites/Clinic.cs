@@ -14,6 +14,6 @@ namespace HospitalIsa.DAL.Entites
         public List<Room> Rooms { get; set; }
         public List<Review> Review { get; set; }
         public double AverageMark { get; set; }
-        public List<Pricelist> PriceList { get; set; }
+        public List<Price> Prices { get; set; }
     }
 }
