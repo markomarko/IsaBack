@@ -16,12 +16,14 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IUserContract _userContract;
         private readonly IRepository<Room> _roomRepository;
+        private readonly IRepository<Examination> _examinationRepository;
         private readonly IRepository<Pricelist> _priceListRepository;
 
         public ClinicService(IRepository<Clinic> clinicRepository,
                                 IRepository<Employee> employeeRepository,
                                 IUserContract userContract,
                                 IRepository<Room> roomRepository,
+                                IRepository<Examination> examinationRepository,
                                 IRepository<Pricelist> priceListRepository
             )
         {
@@ -29,6 +31,7 @@ namespace HospitalIsa.BLL.Services
             _employeeRepository = employeeRepository;
             _userContract = userContract;
             _roomRepository = roomRepository;
+            _examinationRepository = examinationRepository;
             _priceListRepository = priceListRepository;
         }
 

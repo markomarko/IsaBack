@@ -72,6 +72,8 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("Approved");
+
                     b.Property<DateTime>("DateTime");
 
                     b.Property<double>("Discount");
@@ -91,8 +93,6 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<string>("Type");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
 
                     b.ToTable("Examinations");
                 });
@@ -347,14 +347,6 @@ namespace HospitalIsa.DAL.Migrations
                     b.HasOne("HospitalIsa.DAL.Entites.Clinic")
                         .WithMany("Employees")
                         .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("HospitalIsa.DAL.Entites.Examination", b =>
-                {
-                    b.HasOne("HospitalIsa.DAL.Entites.Employee", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

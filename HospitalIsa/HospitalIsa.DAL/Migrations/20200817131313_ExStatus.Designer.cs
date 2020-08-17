@@ -10,12 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-<<<<<<< Updated upstream:HospitalIsa/HospitalIsa.DAL/Migrations/20200815003739_init.Designer.cs
-    [Migration("20200815003739_init")]
-=======
-    [Migration("20200815125800_init")]
->>>>>>> Stashed changes:HospitalIsa/HospitalIsa.DAL/Migrations/20200815125800_init.Designer.cs
-    partial class init
+    [Migration("20200817131313_ExStatus")]
+    partial class ExStatus
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -78,6 +74,8 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("Approved");
+
                     b.Property<DateTime>("DateTime");
 
                     b.Property<double>("Discount");
@@ -97,8 +95,6 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<string>("Type");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
 
                     b.ToTable("Examinations");
                 });
@@ -353,14 +349,6 @@ namespace HospitalIsa.DAL.Migrations
                     b.HasOne("HospitalIsa.DAL.Entites.Clinic")
                         .WithMany("Employees")
                         .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("HospitalIsa.DAL.Entites.Examination", b =>
-                {
-                    b.HasOne("HospitalIsa.DAL.Entites.Employee", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static HospitalIsa.DAL.Entites.ExaminationStatus;
 
 namespace HospitalIsa.BLL.Services
 {
@@ -42,7 +43,7 @@ namespace HospitalIsa.BLL.Services
             try
             {
                 var Examination = _examinationRepository.Find(x => x.Id.Equals(roomExaminationPOCO.ExaminationId)).First();
-                Examination.Approved = true;
+                Examination.Approved = ExaminationStatus.Accepted;
                 Examination.RoomId = roomExaminationPOCO.RoomId;
                 await _examinationRepository.Update(Examination);
                 return true;
@@ -60,12 +61,14 @@ namespace HospitalIsa.BLL.Services
             {
                 Id = Guid.NewGuid(),
                 DateTime = examinationPOCO.DateTime,
-               // Doctor = _mapper.Map<EmployeePOCO, Employee>(examinationPOCO.Doctor),
+                // Doctor = _mapper.Map<EmployeePOCO, Employee>(examinationPOCO.Doctor),
                 DoctorId = examinationPOCO.DoctorId,
                 PatientId = examinationPOCO.PatientId,
-                Approved = false
+                Type = examinationPOCO.Type,
+                Approved = ExaminationStatus.Requested
                 
             };
+
 
             try
             {
@@ -77,6 +80,19 @@ namespace HospitalIsa.BLL.Services
                 ;
             }
             return false;
+        }
+
+        public async Task<object> FirstAvailableByDate(RoomDatePOCO roomDatePOCO)
+        {
+            var examinations = _examinationRepository.Find(x => x.DateTime.Equals(roomDatePOCO.RoomId)).ToList();
+            var ex = GenerateFreeExamination(examinations, roomDatePOCO.Date.FirstOrDefault()).First();
+            while(ex == null) {
+                roomDatePOCO.Date.FirstOrDefault().AddDays(1);
+                ex = GenerateFreeExamination(examinations, roomDatePOCO.Date.FirstOrDefault()).First();
+            }
+            
+            return ex;
+
         }
 
         public async Task<object> GetClinicByTypeDateExamination(string type, DateTime dateTime)
@@ -128,7 +144,11 @@ namespace HospitalIsa.BLL.Services
             foreach(var doctor in doctors)
             {
                 List<Examination> examinationsOfSpecificDoctor = new List<Examination>();
-                examinationsOfSpecificDoctor=_examinationRepository.Find(x => x.DoctorId.Equals(doctor.EmployeeId)).ToList();
+                try
+                {
+                    examinationsOfSpecificDoctor = _examinationRepository.Find(x => x.DoctorId.Equals(doctor.EmployeeId)).ToList();
+                }
+                catch (Exception e) { }
                  // zauzeti pregledi za odredjenog doktora
                 var freeExaminations = GenerateFreeExamination(examinationsOfSpecificDoctor, dateTime);
                 DoctorsFreeExaminationsPOCO res = new DoctorsFreeExaminationsPOCO();
@@ -137,6 +157,13 @@ namespace HospitalIsa.BLL.Services
                 result.Add(res);
             }
             return result;
+        }
+
+        public async Task<object> GetOccupancyForRoomByDate(RoomDatePOCO roomDatePOCO)
+        {
+            var examinations = _examinationRepository.Find(x => x.DateTime.Equals(roomDatePOCO.RoomId)).ToList();
+            var ex = GenerateFreeExamination(examinations, roomDatePOCO.Date.FirstOrDefault());
+            return ex;
         }
 
         private List<DateTime> GenerateFreeExamination(List<Examination> occupiedExamination, DateTime dateTimeOfExamination)

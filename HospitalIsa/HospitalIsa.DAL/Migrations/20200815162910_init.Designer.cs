@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200815003739_init")]
+    [Migration("20200815162910_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("City");
 
-                    b.Property<Guid?>("ClinicId");
+                    b.Property<Guid>("ClinicId");
 
                     b.Property<string>("Email");
 
@@ -67,6 +67,36 @@ namespace HospitalIsa.DAL.Migrations
                     b.HasIndex("ClinicId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Examination", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Approved");
+
+                    b.Property<DateTime>("DateTime");
+
+                    b.Property<double>("Discount");
+
+                    b.Property<Guid>("DoctorId");
+
+                    b.Property<TimeSpan>("Duration");
+
+                    b.Property<Guid>("PatientId");
+
+                    b.Property<bool>("PreDefined");
+
+                    b.Property<double>("Price");
+
+                    b.Property<Guid>("RoomId");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Examinations");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Patient", b =>
@@ -318,7 +348,8 @@ namespace HospitalIsa.DAL.Migrations
                 {
                     b.HasOne("HospitalIsa.DAL.Entites.Clinic")
                         .WithMany("Employees")
-                        .HasForeignKey("ClinicId");
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Pricelist", b =>

@@ -72,5 +72,37 @@ namespace HospitalIsa.API.Controllers
             return false;
         }
 
+        [HttpPost]
+        [Route("GetOccupancyForRoomByDate")]
+        public async Task<object> GetRoomsByTime([FromBody] RoomDateModel model)
+        {
+            try
+            {
+                var result = await _examinationContract.GetOccupancyForRoomByDate(_mapper.Map<RoomDateModel, RoomDatePOCO>(model));
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
+        [HttpPost]
+        [Route("FirstAvailableByDate")]
+        public async Task<object> FirstAvailableByDate([FromBody] RoomDateModel model)
+        {
+            try
+            {
+                var result = await _examinationContract.FirstAvailableByDate(_mapper.Map<RoomDateModel, RoomDatePOCO>(model));
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
     }
 }
