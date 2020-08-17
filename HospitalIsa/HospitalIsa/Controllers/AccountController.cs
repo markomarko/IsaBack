@@ -61,7 +61,6 @@ namespace HospitalIsa.API.Controllers
         [HttpGet]
         [Route("GetRegisterRequests")]
         public async Task<object> GetRegisterRequests() => await _userContract.GetRegisterRequests();
-        
         [HttpPost]
         [Route("AcceptPatientRegisterRequest")]
         public async Task<bool> AcceptPatientRegisterRequest(MailModel mail)
@@ -86,7 +85,6 @@ namespace HospitalIsa.API.Controllers
             }
             return false; 
         }
-
         [HttpGet]
         [Route("CheckIfSignedBefore/{userId}")]
         public async Task<bool> CheckIfSignedBefore([FromRoute] string userId)
@@ -100,10 +98,10 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("SendMail")]
-        public async Task<bool> SendMail([FromBody]MailModel mail)
+        public bool SendMail(MailModel mail)
         {
-            var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
-                ms.SendEmail(mailModel);
+            var mailModel =  _mapper.Map<MailModel, MailPOCO>(mail);
+               ms.SendEmail(mailModel);
                 return true;
                 
         }

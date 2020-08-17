@@ -50,7 +50,7 @@ namespace HospitalIsa.API.Controllers
         [HttpGet]
         [Route("GetClinicByAdminId/{adminId}")]
         public async Task<object> GetClinicByAdminId([FromRoute] string adminId)
-       {
+        {
             return await _clinicContract.GetClinicByAdminId(Guid.Parse(adminId));
         }
 
@@ -90,5 +90,30 @@ namespace HospitalIsa.API.Controllers
             return false;
             
         }
+
+        [HttpGet]
+        [Route("GetAllRooms/{adminId}")]
+        public async Task<object> GetAllRooms([FromRoute] string adminId)
+        {
+            return await _clinicContract.GetAllRooms(Guid.Parse(adminId));
+        }
+
+        [HttpPost]
+        [Route("UpdateRoom")]
+        public async Task<bool> UpdateRoom ([FromBody] RoomModel room)
+        {
+            if( await _clinicContract.UpdateRoom(_mapper.Map<RoomModel, RoomPOCO>(room)))
+                return true;
+            return false;
+        }
+        [HttpPost]
+        [Route("DeleteRoom")]
+        public async Task<bool> DeleteRoom([FromBody] RoomModel room)
+        {
+            if (await _clinicContract.DeleteRoom(_mapper.Map<RoomModel, RoomPOCO>(room)))
+                return true;
+            return false;
+        }
+
     }
 }
