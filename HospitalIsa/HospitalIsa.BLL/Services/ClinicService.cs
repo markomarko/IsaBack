@@ -1,4 +1,5 @@
-﻿using HospitalIsa.BLL.Contracts;
+﻿using AutoMapper;
+using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Models;
 using HospitalIsa.DAL.Entites;
 using HospitalIsa.DAL.Repositories.Abstract;
@@ -16,15 +17,17 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IUserContract _userContract;
         private readonly IRepository<Room> _roomRepository;
+        private readonly IRepository<Price> _priceListRepository;
+        private readonly IMapper _mapper;
         private readonly IRepository<Examination> _examinationRepository;
-        private readonly IRepository<Pricelist> _priceListRepository;
 
         public ClinicService(IRepository<Clinic> clinicRepository,
                                 IRepository<Employee> employeeRepository,
                                 IUserContract userContract,
                                 IRepository<Room> roomRepository,
+                                IRepository<Price> priceListRepository,
+                                IMapper mapper
                                 IRepository<Examination> examinationRepository,
-                                IRepository<Pricelist> priceListRepository
             )
         {
             _clinicRepository = clinicRepository;
@@ -33,6 +36,7 @@ namespace HospitalIsa.BLL.Services
             _roomRepository = roomRepository;
             _examinationRepository = examinationRepository;
             _priceListRepository = priceListRepository;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddClinic(ClinicPOCO clinic)
@@ -46,10 +50,11 @@ namespace HospitalIsa.BLL.Services
                     Address = clinic.Address
                 };
                 //var result = _clinicRepository.Find(c => c.Name.Equals(clinic.Name));
-                
-               await _clinicRepository.Create(newClinic);
-                
-            } catch (Exception e)
+
+                await _clinicRepository.Create(newClinic);
+
+            }
+            catch (Exception e)
             {
                 throw e;
             }
@@ -63,7 +68,7 @@ namespace HospitalIsa.BLL.Services
             try
             {
                 var clinicAdmin = await _userContract.GetUserById(adminId) as Employee;
-               var result = _clinicRepository.Find(clinic => clinic.ClinicId.Equals(clinicAdmin.ClinicId)).First();
+                var result = _clinicRepository.Find(clinic => clinic.ClinicId.Equals(clinicAdmin.ClinicId)).First();
                 return result;
             }
             catch (Exception e)
@@ -72,30 +77,19 @@ namespace HospitalIsa.BLL.Services
             }
 
         }
-
-
         public async Task<bool> AddRoomToClinic(RoomPOCO room)
         {
-            Room newRoom = new Room()
-            {
-                Name = room.Name,
-                Number = room.Number,
-            };
+            room.RoomId = Guid.NewGuid();
             try
             {
-                var clinicToAddRoom = _clinicRepository.Find(clinic => clinic.ClinicId.ToString().Equals(room.ClinicId.ToString())).FirstOrDefault();
-                if (clinicToAddRoom.Rooms == null)
-                {
-                    clinicToAddRoom.Rooms = new List<Room>();
-                }
-                clinicToAddRoom.Rooms.Add(newRoom);
-                await _roomRepository.Create(newRoom);
+                await _roomRepository.Create(_mapper.Map<RoomPOCO, Room>(room));
                 return true;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw e;
             }
-            
+
         }
         public async Task<object> GetPriceList(Guid adminId)
         {
@@ -105,5 +99,34 @@ namespace HospitalIsa.BLL.Services
             return _priceListRepository.Find(price => price.ClinicId.Equals(clinic.ClinicId)).ToList();
 
         }
+        public async Task<bool> UpdatePrice(PricePOCO price)
+        {
+            var priceToChange = _priceListRepository.Find(pr => pr.PriceId.Equals(price.PriceId)).First();
+            await _priceListRepository.Delete(priceToChange);
+            if (await _priceListRepository.Create(_mapper.Map<PricePOCO, Price>(price)))
+                return true;
+            return false;
+        }
+        public async Task<object> GetAllRooms(Guid adminId)
+        { 
+            var clinic = await GetClinicByAdminId(adminId) as Clinic;
+            return _roomRepository.Find(room => room.ClinicId.Equals(clinic.ClinicId)).ToList();
+        }
+        public async Task<bool> UpdateRoom(RoomPOCO room)
+        {
+            var roomToChange = _roomRepository.Find(r => r.RoomId.Equals(room.RoomId)).First();
+            //TO DO : Implement check if room can be changed - only if there is no upcoming examination booked in that room
+            await _roomRepository.Delete(roomToChange);
+            if (await _roomRepository.Create(_mapper.Map<RoomPOCO, Room>(room))) 
+                return true;
+            return false;
+        }
+        public async Task<bool>  DeleteRoom(RoomPOCO room)
+        {
+            //TO DO : Implement check if room can be deleted - only if there is no upcoming examination booked in that room
+            if ( await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room)))
+                return true;
+             return false;
+        }   
     }
 }

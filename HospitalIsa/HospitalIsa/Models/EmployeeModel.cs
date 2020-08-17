@@ -10,6 +10,7 @@ namespace HospitalIsa.API.Models
     public class EmployeeModel
     {
         public Guid EmployeeId { get; set; }
+        public Guid ClinicId { get; set; }
         public string Jmbg { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
