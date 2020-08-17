@@ -76,20 +76,10 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<bool> AddRoomToClinic(RoomPOCO room)
         {
-            Room newRoom = new Room()
-            {
-                Name = room.Name,
-                Number = room.Number,
-            };
+            room.RoomId = Guid.NewGuid();
             try
             {
-                var clinicToAddRoom = _clinicRepository.Find(clinic => clinic.ClinicId.ToString().Equals(room.ClinicId.ToString())).FirstOrDefault();
-                if (clinicToAddRoom.Rooms == null)
-                {
-                    clinicToAddRoom.Rooms = new List<Room>();
-                }
-                clinicToAddRoom.Rooms.Add(newRoom);
-                await _roomRepository.Create(newRoom);
+                await _roomRepository.Create(_mapper.Map<RoomPOCO, Room>(room));
                 return true;
             }
             catch (Exception e)
@@ -114,5 +104,26 @@ namespace HospitalIsa.BLL.Services
                 return true;
             return false;
         }
+        public async Task<object> GetAllRooms(Guid adminId)
+        { 
+            var clinic = await GetClinicByAdminId(adminId) as Clinic;
+            return _roomRepository.Find(room => room.ClinicId.Equals(clinic.ClinicId)).ToList();
+        }
+        public async Task<bool> UpdateRoom(RoomPOCO room)
+        {
+            var roomToChange = _roomRepository.Find(r => r.RoomId.Equals(room.RoomId)).First();
+            //TO DO : Implement check if room can be changed - only if there is no upcoming examination booked in that room
+            await _roomRepository.Delete(roomToChange);
+            if (await _roomRepository.Create(_mapper.Map<RoomPOCO, Room>(room))) 
+                return true;
+            return false;
+        }
+        public async Task<bool>  DeleteRoom(RoomPOCO room)
+        {
+            //TO DO : Implement check if room can be deleted - only if there is no upcoming examination booked in that room
+            if ( await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room)))
+                return true;
+             return false;
+        }   
     }
 }
