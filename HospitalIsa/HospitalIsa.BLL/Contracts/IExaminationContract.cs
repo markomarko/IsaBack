@@ -15,5 +15,6 @@ namespace HospitalIsa.BLL.Contracts
         Task<bool> AcceptExaminationRequest(RoomExaminationPOCO roomExaminationPOCO );
         Task<object> GetOccupancyForRoomByDate(RoomDatePOCO roomDatePOCO);
         Task<object> FirstAvailableByDate(RoomDatePOCO roomDatePOCO);
+        Task<object> GetExaminationPriceByTypeAndClinic(Guid clinicId, string type);
     }
 }

@@ -116,7 +116,11 @@ namespace HospitalIsa.BLL.Services
                                     ExaminationType = newEmployee.Specialization,
                                     ClinicId = newEmployee.ClinicId
                                 };
-                                await _priceListRepository.Create(newPrice);
+                                if (!PriceExists(newPrice))
+                                {
+                                    await _priceListRepository.Create(newPrice);
+                                }
+                                
                             }
                             
                         }
@@ -132,6 +136,16 @@ namespace HospitalIsa.BLL.Services
             }
             return false;
         }
+
+        private bool PriceExists(Price newPrice)
+        {
+           foreach (Price price in _priceListRepository.GetAll())
+                if (price.ExaminationType.Equals(newPrice.ExaminationType) && (price.ClinicId.Equals(newPrice.ClinicId))){
+                    return true;
+                }
+            return false;
+        }
+
         public async Task<bool> CheckIfSignedBefore(string userId)
         {
             try

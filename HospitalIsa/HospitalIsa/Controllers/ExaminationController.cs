@@ -103,6 +103,12 @@ namespace HospitalIsa.API.Controllers
             }
 
         }
+        [HttpPost]
+        [Route("GetExaminationPriceByTypeAndClinic")]
+        public async Task<object> GetExaminationPriceByTypeAndClinic([FromBody] ExaminationRequestModel model)
+        {
+            return await _examinationContract.GetExaminationPriceByTypeAndClinic(model.ClinicId, model.Type);
+        }
 
     }
 }

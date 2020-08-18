@@ -21,13 +21,15 @@ namespace HospitalIsa.BLL.Services
         private readonly IUserContract _userContract;
         private readonly IRepository<Room> _roomRepository;
         private readonly IMapper _mapper;
+        private readonly IRepository<Price> _priceListRepository;
 
         public ExaminationService(IRepository<Clinic> clinicRepository,
                                 IRepository<Employee> employeeRepository,
                                 IUserContract userContract,
                                 IRepository<Room> roomRepository,
                                 IRepository<Examination> examinationRepository,
-                                IMapper mapper
+                                IMapper mapper,
+                                IRepository<Price> priceListRepository
             )
         {
             _clinicRepository = clinicRepository;
@@ -36,6 +38,7 @@ namespace HospitalIsa.BLL.Services
             _roomRepository = roomRepository;
             _examinationRepository = examinationRepository;
             _mapper = mapper;
+            _priceListRepository = priceListRepository;
         }
 
         public async Task<bool> AcceptExaminationRequest(RoomExaminationPOCO roomExaminationPOCO)
@@ -51,7 +54,6 @@ namespace HospitalIsa.BLL.Services
             catch (Exception e)
             {
                 throw e;
-                return false;
             }
         }
 
@@ -66,7 +68,7 @@ namespace HospitalIsa.BLL.Services
                 PatientId = examinationPOCO.PatientId,
                 Type = examinationPOCO.Type,
                 Status = ExaminationStatus.Requested
-                
+                //setprice
             };
 
 
@@ -134,12 +136,20 @@ namespace HospitalIsa.BLL.Services
             List<Employee> doctorsInClinic = new List<Employee>();
 
             var employees = _employeeRepository.Find(x => x.ClinicId.Equals(idClinic)).ToList();
-
-            foreach(var doctor in employees)
+            if (type.Equals(""))
             {
-                if (doctor.Specialization.Equals(type))
-                    doctors.Add(doctor);
+                doctors.AddRange(employees);
+                doctors.RemoveAll(doctor => doctor.Specialization.Equals(""));
             }
+            else
+            {
+                foreach (var doctor in employees)
+                {
+                    if (doctor.Specialization.Equals(type))
+                        doctors.Add(doctor);
+                }
+            }
+           
 
             foreach(var doctor in doctors)
             {
@@ -199,6 +209,12 @@ namespace HospitalIsa.BLL.Services
             }
 
             return freeExamination;
+        }
+
+        public async Task<object> GetExaminationPriceByTypeAndClinic(Guid clinicId,string type)
+        {      
+            return (_priceListRepository.Find(price => price.ClinicId.Equals(clinicId)).Where(price => price.ExaminationType.Equals(type)).First());
+            
         }
     }
 }
