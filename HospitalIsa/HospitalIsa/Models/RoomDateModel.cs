@@ -8,6 +8,6 @@ namespace HospitalIsa.API.Models
     public class RoomDateModel
     {
         public Guid RoomId { get; set; }
-        public List<DateTime> Date {get;set;}
+        public DateTime Date {get;set;}
     }
 }

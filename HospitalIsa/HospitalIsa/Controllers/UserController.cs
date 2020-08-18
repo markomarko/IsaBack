@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
+using Hospital.MailService;
 using HospitalIsa.API.Models;
 using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Models;
 using HospitalIsa.DAL.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Hospital.MailService;
-using HospitalIsa.DAL.Entities;
 
 namespace HospitalIsa.API.Controllers
 {
@@ -47,7 +44,14 @@ namespace HospitalIsa.API.Controllers
         {
             return await _userContract.GetUserById(id);
         }
-
+        [HttpPost]
+        [Route("DeleteEmployee")]
+        public async Task<bool> DeleteEmployee([FromBody] string employeeId)
+        {
+            if (await _userContract.DeleteEmployee(Guid.Parse(employeeId))){
+                return true;
+            }return false;
+        }
         [HttpPost]
         [Route("UpdatePatient")]
         public async Task<bool> UpdatePatient([FromBody] PatientModel patient)

@@ -42,19 +42,15 @@ namespace HospitalIsa.API.Controllers
             }
             return false;
         }
-
         [HttpGet]
         [Route("GetAllClinics")]
         public async Task<object> GetAllClinics() => await _clinicContract.GetAllClinics();
-
         [HttpGet]
         [Route("GetClinicByAdminId/{adminId}")]
         public async Task<object> GetClinicByAdminId([FromRoute] string adminId)
         {
             return await _clinicContract.GetClinicByAdminId(Guid.Parse(adminId));
         }
-
-
         [HttpPost]
         [Route("AddRoomToClinic")]
         public async Task<bool> AddRoomToClinic([FromBody] RoomModel room)
@@ -78,7 +74,6 @@ namespace HospitalIsa.API.Controllers
             }
            
         }
-
         [HttpPost]
         [Route("UpdatePrice")]
         public async Task<bool> UpdatePrice([FromBody] PriceModel price)
@@ -90,14 +85,12 @@ namespace HospitalIsa.API.Controllers
             return false;
             
         }
-
         [HttpGet]
         [Route("GetAllRooms/{adminId}")]
         public async Task<object> GetAllRooms([FromRoute] string adminId)
         {
             return await _clinicContract.GetAllRooms(Guid.Parse(adminId));
         }
-
         [HttpPost]
         [Route("UpdateRoom")]
         public async Task<bool> UpdateRoom ([FromBody] RoomModel room)
@@ -114,6 +107,11 @@ namespace HospitalIsa.API.Controllers
                 return true;
             return false;
         }
-
+        [HttpGet]
+        [Route("GetAllDoctorsFromClinic/{clinicId}")]
+        public async Task<object> GetAllDoctorsFromClinic([FromRoute] string clinicId)
+        {
+          return  _clinicContract.GetAllDoctorsFromClinic(Guid.Parse(clinicId));
+        }
     }
 }

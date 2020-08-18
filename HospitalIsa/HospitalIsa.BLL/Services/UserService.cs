@@ -298,5 +298,20 @@ namespace HospitalIsa.BLL.Services
             return allSpecializations; 
             
         }
+        public async Task<bool> DeleteEmployee(Guid employeeId)
+        {
+            try
+            {
+                Employee deleteEmployee = _employeeRepository.Find(p => p.EmployeeId.Equals(employeeId)).First(); ;
+                await _employeeRepository.Delete(deleteEmployee);
+                User deleteUser = _userRepository.Find(p => p.UserId.Equals(employeeId)).First();
+                await _userRepository.Delete(deleteUser);
+                return true;
+            } catch (Exception e)
+            {
+                throw e;
+            }
+            
+        }
     }
 }

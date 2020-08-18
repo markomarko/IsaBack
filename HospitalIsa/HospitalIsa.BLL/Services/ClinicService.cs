@@ -26,8 +26,8 @@ namespace HospitalIsa.BLL.Services
                                 IUserContract userContract,
                                 IRepository<Room> roomRepository,
                                 IRepository<Price> priceListRepository,
-                                IMapper mapper
-                                IRepository<Examination> examinationRepository,
+                                IMapper mapper,
+                                IRepository<Examination> examinationRepository
             )
         {
             _clinicRepository = clinicRepository;
@@ -127,6 +127,11 @@ namespace HospitalIsa.BLL.Services
             if ( await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room)))
                 return true;
              return false;
-        }   
+        }
+        public async Task<object> GetAllDoctorsFromClinic(Guid clinicId)
+        {
+            return  _employeeRepository.Find(doctor => doctor.ClinicId.Equals(clinicId)).ToList();
+            
+        }
     }
 }
