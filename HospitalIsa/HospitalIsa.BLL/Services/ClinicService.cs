@@ -64,7 +64,24 @@ namespace HospitalIsa.BLL.Services
             return true;
         }
 
-        public async Task<object> GetAllClinics() => _clinicRepository.GetAll();
+        public async Task<object> GetAllClinics() 
+        {
+            try
+            {
+                List<Clinic> result = _clinicRepository.GetAll().ToList();
+                
+                //foreach (Clinic clinic in result)
+                //{
+                //    var cene = clinic.Prices;
+                //    var prices = _priceListRepository.Find(price => price.ClinicId.Equals(clinic.ClinicId)).ToList();
+                   
+                //}
+                return result;
+            }catch(Exception e)
+            {
+                throw e;
+            }
+        }
 
         public async Task<object> GetClinicByAdminId(Guid adminId)
         {
@@ -94,13 +111,9 @@ namespace HospitalIsa.BLL.Services
             }
 
         }
-        public async Task<object> GetPriceList(Guid adminId)
+        public async Task<object> GetPriceList(Guid clinicId)
         {
-            var obj = await GetClinicByAdminId(adminId);
-            Clinic clinic = obj as Clinic;
-
-            return _priceListRepository.Find(price => price.ClinicId.Equals(clinic.ClinicId)).ToList();
-
+            return _priceListRepository.Find(price => price.ClinicId.Equals(clinicId)).ToList();
         }
         public async Task<bool> UpdatePrice(PricePOCO price)
         {
