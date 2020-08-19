@@ -18,5 +18,7 @@ namespace HospitalIsa.BLL.Contracts
         Task<bool> UpdateRoom(RoomPOCO room);
         Task<bool> DeleteRoom(RoomPOCO room);
        Task<object> GetAllDoctorsFromClinic(Guid clinicId);
+        Task<object> GetPatientsByClinicId(Guid clinicId);
+        Task<object> GetPatientsByDoctorId(Guid doctorId);
     }
 }

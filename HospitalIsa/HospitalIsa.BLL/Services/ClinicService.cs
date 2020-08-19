@@ -20,6 +20,7 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Price> _priceListRepository;
         private readonly IMapper _mapper;
         private readonly IRepository<Examination> _examinationRepository;
+        private readonly IRepository<Patient> _patientRepository;
 
         public ClinicService(IRepository<Clinic> clinicRepository,
                                 IRepository<Employee> employeeRepository,
@@ -27,7 +28,8 @@ namespace HospitalIsa.BLL.Services
                                 IRepository<Room> roomRepository,
                                 IRepository<Price> priceListRepository,
                                 IMapper mapper,
-                                IRepository<Examination> examinationRepository
+                                IRepository<Examination> examinationRepository,
+                                IRepository<Patient> patientRepository
             )
         {
             _clinicRepository = clinicRepository;
@@ -37,6 +39,7 @@ namespace HospitalIsa.BLL.Services
             _examinationRepository = examinationRepository;
             _priceListRepository = priceListRepository;
             _mapper = mapper;
+            _patientRepository = patientRepository;
         }
 
         public async Task<bool> AddClinic(ClinicPOCO clinic)
@@ -132,6 +135,48 @@ namespace HospitalIsa.BLL.Services
         {
             return  _employeeRepository.Find(doctor => doctor.ClinicId.Equals(clinicId)).ToList();
             
+        }
+
+        public async Task<object> GetPatientsByClinicId(Guid clinicId)
+        {
+            try
+            {
+                var examinations = _examinationRepository.GetAll();
+                List<object> result = new List<object>();
+                foreach (Examination examination in examinations)
+                {
+                    Room room = _roomRepository.Find(r => r.RoomId.Equals(examination.RoomId)).First(); //puca ako je roomId GUID "0000-000..."
+                    if (room.ClinicId.Equals(clinicId))
+                    {
+                        result.Add(_patientRepository.Find(patient => patient.PatientId.Equals(examination.PatientId)).First());
+                    }
+                }
+                return result.Distinct();
+            } catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<object> GetPatientsByDoctorId(Guid doctorId)
+        {
+            try
+            {
+                var examinations = _examinationRepository.GetAll();
+                List<object> result = new List<object>();
+                foreach (Examination examination in examinations)
+                {
+                    if (examination.DoctorId.Equals(doctorId))
+                    {
+                        result.Add(_patientRepository.Find(patient => patient.PatientId.Equals(examination.PatientId)).First());
+                    }
+                }
+                return result.Distinct();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }
