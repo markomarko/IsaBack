@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HospitalIsa.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class ExaminationStatus : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

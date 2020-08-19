@@ -39,6 +39,8 @@ namespace HospitalIsa.API.Services
             CreateMap<ExaminationPOCO, ExaminationModel>();
             CreateMap<RoomDateModel, RoomDatePOCO>();
             CreateMap<RoomDatePOCO, RoomDateModel>();
+            CreateMap<RoomExaminationPOCO, RoomExaminationModel>();
+            CreateMap<RoomExaminationModel, RoomExaminationPOCO>();
 
             //relation BLL <=> DAL
             CreateMap<RegisterPOCO, User>();
