@@ -102,7 +102,7 @@ namespace HospitalIsa.BLL.Services
             List<Clinic> listOfClinic = new List<Clinic>();
             //var examinations = (_examinationRepository.GetAll())
             //    .Where(x => x.Type.Equals(type) && x.DateTime.Date.Equals(dateTime)).ToList(); // vrati zauzete termine tog tipa na taj dan
-
+            
             List<Employee> listOfDoctor = _employeeRepository.Find(x => x.Specialization.Equals(type)).ToList(); // vrati mi doktore tog tipa
 
             foreach (var doctor in listOfDoctor)
@@ -112,7 +112,13 @@ namespace HospitalIsa.BLL.Services
                     listOfClinic.Add(clinic);
             }
             //var listOfDoctor = await _userRepository.GetUsersByTypeAsync(examination.Type); // vrati mi doktore tog tipa
-
+            foreach (Clinic clinic in listOfClinic)
+            {
+               // var cene = clinic.Prices;
+                var prices = _priceListRepository.Find(price => price.ClinicId.Equals(clinic.ClinicId)).ToList();
+               // clinic.Prices.AddRange(prices);
+               // clinic.Prices.Distinct();
+            }
             return listOfClinic;
 
         }
