@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200818140754_init")]
-    partial class init
+    [Migration("20200818231355_ExaminationStatus")]
+    partial class ExaminationStatus
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -56,19 +56,24 @@ namespace HospitalIsa.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetExaminationRequests")]
-        public async Task<object> GetExaminationRequests() => await _examinationContract.GetExaminationRequests();
+        [Route("GetExaminationRequests/{clinicId}")]
+        public async Task<object> GetExaminationRequests([FromRoute] string clinicId) 
+        {
+            return await _examinationContract.GetExaminationRequests(Guid.Parse(clinicId));
+        }
 
         [HttpPost]
         [Route("AcceptExaminationRequest")]
         public async Task<bool> AcceptExaminationRequest(RoomExaminationModel model)
         {
-           
-            if (await _examinationContract.AcceptExaminationRequest(_mapper.Map<RoomExaminationModel, RoomExaminationPOCO> (model)))
+            try
             {
-                //ms.SendEmail(mailModel);
-                return true;
-            }
+                if (await _examinationContract.AcceptExaminationRequest(_mapper.Map<RoomExaminationModel, RoomExaminationPOCO>(model)))
+                {
+                    //ms.SendEmail(mailModel);
+                    return true;
+                }
+            } catch(Exception ex) { }
             return false;
         }
 
