@@ -32,14 +32,12 @@ namespace HospitalIsa.API.Controllers
         {
             return await _examinationContract.GetClinicByTypeDateExamination(examinationRequest.Type, examinationRequest.DateTime);
         }
-
         [HttpPost]
         [Route("GetFreeExaminationAndDoctorByClinic")]
         public async Task<object> GetFreeExaminationAndDoctorByClinic(ExaminationRequestModel examinationRequest)
         {
             return await _examinationContract.GetFreeExaminationAndDoctorByClinic(examinationRequest.ClinicId, examinationRequest.Type, examinationRequest.DateTime);
         }
-
         [HttpPost]
         [Route("AddExamination")]
         public async Task<bool> AddExamination([FromBody] ExaminationModel model)
@@ -54,14 +52,18 @@ namespace HospitalIsa.API.Controllers
                 return false;
             }
         }
-
+        [HttpGet]
+        [Route("GetExaminationById/{examinationId}")]
+        public async Task<object> GetExaminationById([FromRoute] string examinationId)
+        {
+            return await _examinationContract.GetExaminationById(Guid.Parse(examinationId));
+        }
         [HttpGet]
         [Route("GetExaminationRequests/{clinicId}")]
         public async Task<object> GetExaminationRequests([FromRoute] string clinicId) 
         {
             return await _examinationContract.GetExaminationRequests(Guid.Parse(clinicId));
         }
-
         [HttpPost]
         [Route("AcceptExaminationRequest")]
         public async Task<bool> AcceptExaminationRequest(RoomExaminationModel model)
@@ -76,7 +78,6 @@ namespace HospitalIsa.API.Controllers
             } catch(Exception ex) { }
             return false;
         }
-
         [HttpPost]
         [Route("GetOccupancyForRoomByDate")]
         public async Task<object> GetRoomsByTime([FromBody] RoomDateModel model)
@@ -92,7 +93,6 @@ namespace HospitalIsa.API.Controllers
             }
 
         }
-
         [HttpPost]
         [Route("FirstAvailableByDate")]
         public async Task<object> FirstAvailableByDate([FromBody] RoomDateModel model)

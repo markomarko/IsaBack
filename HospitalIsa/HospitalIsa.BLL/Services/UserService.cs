@@ -246,7 +246,7 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var patient = await _userManager.FindByEmailAsync(mail.Receiver);
+                var patient = await _userManager.FindByEmailAsync(mail.Receivers.First());
                 patient.EmailConfirmed = true;
                 await _userManager.UpdateAsync(patient);
 
@@ -261,7 +261,7 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(mail.Receiver);
+                var user = await _userManager.FindByEmailAsync(mail.Receivers.First());
                 await _userManager.DeleteAsync(user);
                 var patient = _patientRepository.Find(x => x.PatientId.Equals(user.UserId)).First();
                 _patientRepository.Delete(patient);

@@ -40,7 +40,6 @@ namespace HospitalIsa.BLL.Services
             _mapper = mapper;
             _priceListRepository = priceListRepository;
         }
-
         public async Task<bool> AcceptExaminationRequest(RoomExaminationPOCO roomExaminationPOCO)
         {
             try
@@ -56,9 +55,10 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
         }
-
         public async Task<bool> AddExamination(ExaminationPOCO examinationPOCO)
         {
+            var clinic = await GetClinicByAdminId(examinationPOCO.DoctorId) as Clinic;
+            PricePOCO price = await GetExaminationPriceByTypeAndClinic(clinic.ClinicId, examinationPOCO.Type) as PricePOCO;
             var newExamination = new Examination()
             {
                 Id = Guid.NewGuid(),
@@ -67,8 +67,8 @@ namespace HospitalIsa.BLL.Services
                 DoctorId = examinationPOCO.DoctorId,
                 PatientId = examinationPOCO.PatientId,
                 Type = examinationPOCO.Type,
-                Status = ExaminationStatus.Requested
-                //setprice
+                Status = ExaminationStatus.Requested,
+                Price = price.DiscountedPrice
             };
 
 
@@ -83,7 +83,6 @@ namespace HospitalIsa.BLL.Services
             }
             return false;
         }
-
         public async Task<object> FirstAvailableByDate(RoomDatePOCO roomDatePOCO)
         {
             var examinations = _examinationRepository.Find(x => x.DateTime.Equals(roomDatePOCO.RoomId) && !x.Status.Equals(Accepted)).ToList();
@@ -97,7 +96,6 @@ namespace HospitalIsa.BLL.Services
             return ex;
 
         }
-
         public async Task<object> GetClinicByTypeDateExamination(string type, DateTime dateTime)
         {
             List<Clinic> listOfClinic = new List<Clinic>();
@@ -123,7 +121,6 @@ namespace HospitalIsa.BLL.Services
             return listOfClinic;
 
         }
-
         public async Task<object> GetExaminationRequests(Guid clinicId)
         {
             List < Employee > employees = new List<Employee>();
@@ -135,7 +132,6 @@ namespace HospitalIsa.BLL.Services
             List<Examination> results = examinationRequests.Where(x => x.Status.Equals(Requested)).ToList();
             return results;
         }
-
         public async Task<object> GetFreeExaminationAndDoctorByClinic(Guid idClinic, string type, DateTime dateTime)
         {
             List<DoctorsFreeExaminationsPOCO> result = new List<DoctorsFreeExaminationsPOCO>();
@@ -180,7 +176,6 @@ namespace HospitalIsa.BLL.Services
             }
             return result;
         }
-
         public async Task<object> GetOccupancyForRoomByDate(RoomDatePOCO roomDatePOCO)
         {
             List<Examination> result = new List<Examination>();
@@ -194,7 +189,6 @@ namespace HospitalIsa.BLL.Services
             }
             return result;
         }
-
         private List<DateTime> GenerateFreeExamination(List<Examination> occupiedExamination, DateTime dateTimeOfExamination)
         {
             TimeSpan startTime = new TimeSpan(7, 0, 0);
@@ -221,11 +215,28 @@ namespace HospitalIsa.BLL.Services
 
             return freeExamination;
         }
-
         public async Task<object> GetExaminationPriceByTypeAndClinic(Guid clinicId,string type)
         {      
             return (_priceListRepository.Find(price => price.ClinicId.Equals(clinicId)).Where(price => price.ExaminationType.Equals(type)).First());
             
+        }
+        public async Task<object> GetExaminationById(Guid examinationId)
+        {
+            return _examinationRepository.Find(examination => examination.Id.Equals(examinationId)).First(); ;
+        }
+        public async Task<object> GetClinicByAdminId(Guid adminId)
+        {
+            try
+            {
+                var clinicAdmin = await _userContract.GetUserById(adminId) as Employee;
+                var result = _clinicRepository.Find(clinic => clinic.ClinicId.Equals(clinicAdmin.ClinicId)).First();
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
     }
 }
