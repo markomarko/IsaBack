@@ -17,8 +17,5 @@ namespace HospitalIsa.BLL.Contracts
         Task<object> FirstAvailableByDate(RoomDatePOCO roomDatePOCO);
         Task<object> GetExaminationPriceByTypeAndClinic(Guid clinicId, string type);
         Task<object> GetExaminationById(Guid examinationId);
-        Task<object> GetAllExaminationsByUserId(Guid userId);
-        Task<bool> AddReview(ReviewPOCO reviewPOCO);
-        Task<object> CheckIfAlreadyReviewed(Guid patientId, Guid reviewedId);
     }
 }

@@ -44,8 +44,6 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<double>("AverageMark");
-
                     b.Property<string>("City");
 
                     b.Property<Guid>("ClinicId");
@@ -150,17 +148,17 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("ReviewId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid?>("ClinicId");
+
                     b.Property<string>("Comment");
 
                     b.Property<int>("Mark");
 
-                    b.Property<Guid>("PatientId");
-
-                    b.Property<Guid>("ReviewedId");
-
                     b.HasKey("ReviewId");
 
-                    b.ToTable("Reviews");
+                    b.HasIndex("ClinicId");
+
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Room", b =>
@@ -360,6 +358,13 @@ namespace HospitalIsa.DAL.Migrations
                         .WithMany("Prices")
                         .HasForeignKey("ClinicId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Review", b =>
+                {
+                    b.HasOne("HospitalIsa.DAL.Entites.Clinic")
+                        .WithMany("Review")
+                        .HasForeignKey("ClinicId");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Room", b =>

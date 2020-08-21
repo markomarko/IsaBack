@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HospitalIsa.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class ExaminationStatus : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -101,21 +101,6 @@ namespace HospitalIsa.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Patients", x => x.PatientId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    ReviewId = table.Column<Guid>(nullable: false),
-                    PatientId = table.Column<Guid>(nullable: false),
-                    Mark = table.Column<int>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    ReviewedId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.ReviewId);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,7 +222,6 @@ namespace HospitalIsa.DAL.Migrations
                     Address = table.Column<string>(nullable: true),
                     City = table.Column<string>(nullable: true),
                     State = table.Column<string>(nullable: true),
-                    AverageMark = table.Column<double>(nullable: false),
                     Specialization = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -271,6 +255,26 @@ namespace HospitalIsa.DAL.Migrations
                         principalTable: "Clinics",
                         principalColumn: "ClinicId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Review",
+                columns: table => new
+                {
+                    ReviewId = table.Column<Guid>(nullable: false),
+                    Mark = table.Column<int>(nullable: false),
+                    Comment = table.Column<string>(nullable: true),
+                    ClinicId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Review", x => x.ReviewId);
+                    table.ForeignKey(
+                        name: "FK_Review_Clinics_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinics",
+                        principalColumn: "ClinicId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -343,6 +347,11 @@ namespace HospitalIsa.DAL.Migrations
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Review_ClinicId",
+                table: "Review",
+                column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rooms_ClinicId",
                 table: "Rooms",
                 column: "ClinicId");
@@ -378,7 +387,7 @@ namespace HospitalIsa.DAL.Migrations
                 name: "Prices");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "Review");
 
             migrationBuilder.DropTable(
                 name: "Rooms");
