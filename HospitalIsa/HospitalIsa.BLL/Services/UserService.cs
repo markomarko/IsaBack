@@ -318,13 +318,22 @@ namespace HospitalIsa.BLL.Services
             return allSpecializations; 
             
         }
-        public async Task<bool> DeleteEmployee(Guid employeeId)
+        public async Task<bool> DeleteEmployee(EmployeePOCO employee)
         {
             try
             {
-                Employee deleteEmployee = _employeeRepository.Find(p => p.EmployeeId.Equals(employeeId)).First(); ;
+
+                var examinationOfDoctor = _examinationRepository.Find(examination => examination.DoctorId.Equals(employee.EmployeeId)).ToList();
+
+                var activeExaminations = examinationOfDoctor.Where(examination => examination.Status.Equals(ExaminationStatus.Accepted)).ToList();
+                foreach (Examination examination in activeExaminations)
+                {
+                    if (examination.DoctorId.Equals(employee.EmployeeId))
+                        return false;
+                }
+                Employee deleteEmployee = _employeeRepository.Find(p => p.EmployeeId.Equals(employee.EmployeeId)).First(); ;
                 await _employeeRepository.Delete(deleteEmployee);
-                User deleteUser = _userRepository.Find(p => p.UserId.Equals(employeeId)).First();
+                User deleteUser = _userRepository.Find(p => p.UserId.Equals(employee.EmployeeId)).First();
                 await _userRepository.Delete(deleteUser);
                 return true;
             } catch (Exception e)
@@ -366,7 +375,7 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receiver)).First();
+                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receivers)).First();
                 var vacation = _vocationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId)).First();
                 vacation.Approved = true;
                 _vocationRepository.Update(vacation);
@@ -382,7 +391,7 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receiver)).First();
+                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receivers)).First();
                 var vacation = _vocationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId)).First();
                 await _vocationRepository.Delete(vacation);
                 return true;

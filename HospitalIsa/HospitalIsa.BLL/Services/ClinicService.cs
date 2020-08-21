@@ -143,10 +143,19 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<bool>  DeleteRoom(RoomPOCO room)
         {
-            //TO DO : Implement check if room can be deleted - only if there is no upcoming examination booked in that room
-            if ( await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room)))
-                return true;
-             return false;
+            
+            var examinationsInRoom = _examinationRepository.Find(examination => examination.RoomId.Equals(room.RoomId)).ToList();
+            
+            var activeExaminations = examinationsInRoom.Where(examination => examination.Status.Equals(ExaminationStatus.Accepted)).ToList();
+            foreach (Examination examination in activeExaminations)
+                {
+                if (examination.RoomId.Equals(room.RoomId))
+                    return false;
+                }
+            await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room));
+            
+            return true;
+             
         }
         public async Task<object> GetAllDoctorsFromClinic(Guid clinicId)
         {

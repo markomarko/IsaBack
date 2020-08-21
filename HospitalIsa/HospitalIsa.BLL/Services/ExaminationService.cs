@@ -217,9 +217,9 @@ namespace HospitalIsa.BLL.Services
 
                 res.Doctor = doctor;
                 res.FreeExaminations = freeExaminations;
-
+                bool b = false;
                 if (freeExaminations.Count() != 0)
-                bool b = true;
+                b = true;
                 List<Vacation> vacations = _vacationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId) && x.Approved.Equals(true)).ToList();
                 foreach (Vacation vocation in vacations)
                 {

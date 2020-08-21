@@ -46,9 +46,10 @@ namespace HospitalIsa.API.Controllers
         }
         [HttpPost]
         [Route("DeleteEmployee")]
-        public async Task<bool> DeleteEmployee([FromBody] string employeeId)
+        public async Task<bool> DeleteEmployee([FromBody] EmployeeModel employee)
         {
-            if (await _userContract.DeleteEmployee(Guid.Parse(employeeId))){
+            if (await _userContract.DeleteEmployee(_mapper.Map<EmployeeModel, EmployeePOCO>(employee)))
+{
                 return true;
             }return false;
         }
