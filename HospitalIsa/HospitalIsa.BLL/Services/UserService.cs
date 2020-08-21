@@ -24,6 +24,8 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Clinic> _clinicRepository;
+        private readonly IRepository<Vacation> _vocationRepository;
+        private readonly IRepository<Examination> _examinationRepository;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
@@ -35,7 +37,9 @@ namespace HospitalIsa.BLL.Services
                             IRepository<Employee> employeeRepository,
                             IRepository<User> userRepository,
                             IRepository<Clinic> clinicRepository,
+                            IRepository<Vacation> vocationRepository,
                             IRepository<Price> priceListReposiory,
+                            IRepository<Examination> examinationRepository,
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
                             IConfiguration config,
@@ -45,6 +49,8 @@ namespace HospitalIsa.BLL.Services
             _employeeRepository = employeeRepository;
             _userRepository = userRepository;
             _clinicRepository = clinicRepository;
+            _vocationRepository = vocationRepository;
+            _examinationRepository = examinationRepository;
             _priceListRepository = priceListReposiory;
             _signInManager = signInManager;
             _userManager = userManager;
@@ -326,6 +332,65 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
             
+        }
+
+        public async Task<bool> VacationRequest(VacationPOCO vocationPOCO)
+        {
+            var examinations = _examinationRepository.Find(x => x.DoctorId.Equals(vocationPOCO.doctorId) && !x.Status.Equals(2)).ToList();
+            var date = vocationPOCO.startDate;
+            while (date.Date <= vocationPOCO.endDate.Date)
+            {
+                foreach (var examination in examinations)
+                {
+                    if (examination.DateTime.Date == date.Date)
+                    {
+                        return false;
+                    }
+                }
+                date = date.AddDays(1);
+            }
+            vocationPOCO.Id = Guid.NewGuid();
+            vocationPOCO.Approved = false;
+            await _vocationRepository.Create(_mapper.Map<VacationPOCO, Vacation>(vocationPOCO));
+            return true;
+        }
+
+        public async Task<object> GetVacationRequests()
+        {
+            IEnumerable<Vacation> vacations = _vocationRepository.GetAll();
+            var results = vacations.Where(x => x.Approved.Equals(false)).ToList();
+            return results;
+        }
+
+        public async Task<bool> AcceptVacationRequests(MailPOCO mailModel)
+        {
+            try
+            {
+                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receiver)).First();
+                var vacation = _vocationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId)).First();
+                vacation.Approved = true;
+                _vocationRepository.Update(vacation);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DenyVacationRequests(MailPOCO mailModel)
+        {
+            try
+            {
+                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receiver)).First();
+                var vacation = _vocationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId)).First();
+                await _vocationRepository.Delete(vacation);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

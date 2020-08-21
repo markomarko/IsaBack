@@ -21,5 +21,9 @@ namespace HospitalIsa.BLL.Contracts
         Task<bool> CheckIfSignedBefore(string userId);
         Task<bool> ChangePassword(ChangePasswordPOCO changePassword);
         Task<bool> DeleteEmployee(Guid employeeId);
+        Task<bool> VacationRequest(VacationPOCO vocationPOCO);
+        Task<object> GetVacationRequests();
+        Task<bool> AcceptVacationRequests(MailPOCO mailModel);
+        Task<bool> DenyVacationRequests(MailPOCO mailModel);
     }
 }

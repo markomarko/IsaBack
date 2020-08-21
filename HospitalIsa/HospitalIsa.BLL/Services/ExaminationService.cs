@@ -19,6 +19,7 @@ namespace HospitalIsa.BLL.Services
         private readonly IRepository<Clinic> _clinicRepository;
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<Examination> _examinationRepository;
+        private readonly IRepository<Vacation> _vacationRepository;
         private readonly IUserContract _userContract;
         private readonly IRepository<Room> _roomRepository;
         private readonly IMapper _mapper;
@@ -31,6 +32,7 @@ namespace HospitalIsa.BLL.Services
                                 IUserContract userContract,
                                 IRepository<Room> roomRepository,
                                 IRepository<Examination> examinationRepository,
+                                IRepository<Vacation> vacationRepositor,
                                 IMapper mapper,
                                 IRepository<Price> priceListRepository,
                                 UserManager<User> userManager,
@@ -47,6 +49,7 @@ namespace HospitalIsa.BLL.Services
             _priceListRepository = priceListRepository;
             _userManager = userManager;
             _reviewRepository = reviewRepository;
+            _vacationRepository = vacationRepositor;
         }
         public async Task<bool> AcceptExaminationRequest(RoomExaminationPOCO roomExaminationPOCO)
         {
@@ -173,10 +176,29 @@ namespace HospitalIsa.BLL.Services
             }
             else
             {
+                
                 foreach (var doctor in employees)
                 {
+                    bool t = true;
                     if (doctor.Specialization.Equals(type))
-                        doctors.Add(doctor);
+                    {
+                        List<Vacation> vacations = _vacationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId) && x.Approved.Equals(true)).ToList();
+                        foreach (Vacation vocation in vacations)
+                        {
+                            var date = vocation.startDate.Date;
+                            while (date.Date <= vocation.endDate.Date)
+                            {
+                                if (date.Date == dateTime.Date)
+                                {
+                                    t = false;
+                                }
+                                date = date.AddDays(1);
+                            }
+                        }
+                        if(t) { 
+                            doctors.Add(doctor);
+                        }
+                    }
                 }
             }
 
@@ -195,7 +217,24 @@ namespace HospitalIsa.BLL.Services
 
                 res.Doctor = doctor;
                 res.FreeExaminations = freeExaminations;
+
                 if (freeExaminations.Count() != 0)
+                bool b = true;
+                List<Vacation> vacations = _vacationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId) && x.Approved.Equals(true)).ToList();
+                foreach (Vacation vocation in vacations)
+                {
+                    var date = vocation.startDate.Date;
+                    while (date.Date <= vocation.endDate.Date)
+                    {
+                        if (date.Date == dateTime.Date)
+                        {
+                            b = false;
+                        }
+                        date = date.AddDays(1);
+                    }
+                }
+                if (freeExaminations.Count() != 0 && b)
+
                     result.Add(res);
             }
             return result;
