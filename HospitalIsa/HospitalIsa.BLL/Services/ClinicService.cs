@@ -63,19 +63,11 @@ namespace HospitalIsa.BLL.Services
             }
             return true;
         }
-
         public async Task<object> GetAllClinics() 
         {
             try
             {
                 List<Clinic> result = _clinicRepository.GetAll().ToList();
-                
-                //foreach (Clinic clinic in result)
-                //{
-                //    var cene = clinic.Prices;
-                //    var prices = _priceListRepository.Find(price => price.ClinicId.Equals(clinic.ClinicId)).ToList();
-                   
-                //}
                 return result;
             }catch(Exception e)
             {
@@ -142,27 +134,22 @@ namespace HospitalIsa.BLL.Services
             return false;
         }
         public async Task<bool>  DeleteRoom(RoomPOCO room)
-        {
-            
+        {           
             var examinationsInRoom = _examinationRepository.Find(examination => examination.RoomId.Equals(room.RoomId)).ToList();
             
-            var activeExaminations = examinationsInRoom.Where(examination => examination.Status.Equals(ExaminationStatus.Accepted)).ToList();
-            foreach (Examination examination in activeExaminations)
+            foreach (Examination examination in examinationsInRoom)
                 {
-                if (examination.RoomId.Equals(room.RoomId))
+                if (examination.Status.Equals(ExaminationStatus.Accepted))
                     return false;
                 }
             await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room));
-            
-            return true;
-             
+            return true; 
         }
         public async Task<object> GetAllDoctorsFromClinic(Guid clinicId)
         {
             return  _employeeRepository.Find(doctor => doctor.ClinicId.Equals(clinicId)).ToList();
             
         }
-
         public async Task<object> GetPatientsByClinicId(Guid clinicId)
         {
             try
@@ -183,7 +170,6 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
         }
-
         public async Task<object> GetPatientsByDoctorId(Guid doctorId)
         {
             try
