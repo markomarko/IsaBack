@@ -90,5 +90,43 @@ namespace HospitalIsa.API.Controllers
                 throw e;
             }
         }
+
+        [HttpPost]
+        [Route("VacationRequest")]
+        public async Task<bool> VacationRequest([FromBody] VacationModel vocation)
+        {
+            var result = await _userContract.VacationRequest(_mapper.Map<VacationModel, VacationPOCO>(vocation));
+            if (result) return true;
+            return false;
+
+        }
+
+        [HttpGet]
+        [Route("GetVacationRequests")]
+        public async Task<object> GetVacationRequests() => await _userContract.GetVacationRequests();
+
+        [Route("AcceptVacationRequests")]
+        public async Task<bool> AcceptVacationRequests(MailModel mail)
+        {
+            var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
+            if (await _userContract.AcceptVacationRequests(mailModel))
+            {
+                ms.SendEmail(mailModel);
+                return true;
+            }
+            return false;
+        }
+        [HttpPost]
+        [Route("DenyVacationRequests")]
+        public async Task<bool> DenyVacationRequests(MailModel mail)
+        {
+            var mailModel = _mapper.Map<MailModel, MailPOCO>(mail);
+            if (await _userContract.DenyVacationRequests(mailModel))
+            {
+                ms.SendEmail(mailModel);
+                return true;
+            }
+            return false;
+        }
     }
 }
