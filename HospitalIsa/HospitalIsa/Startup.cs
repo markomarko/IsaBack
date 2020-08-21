@@ -76,6 +76,7 @@ namespace HospitalIsa
             services.AddScoped<IRepository<Examination>, Repository<Examination>>(); //OVO MI JE FALILO PA MI NIJE POGADJAO CLINIC CONTROLER ???????
             services.AddScoped<IRepository<Room>, Repository<Room>>(); //OVO MI JE FALILO PA MI NIJE POGADJAO CLINIC CONTROLER ???????
             services.AddScoped<IRepository<Price>, Repository<Price>>();
+            services.AddScoped<IRepository<Review>, Repository<Review>>();
             
 
             services.AddCors();

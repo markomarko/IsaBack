@@ -59,6 +59,12 @@ namespace HospitalIsa.API.Controllers
             return await _examinationContract.GetExaminationById(Guid.Parse(examinationId));
         }
         [HttpGet]
+        [Route("GetAllExaminationsByUserId/{userId}")]
+        public async Task<object> GetAllExaminationsByUserId([FromRoute] string userId)
+        {
+            return await _examinationContract.GetAllExaminationsByUserId(Guid.Parse(userId));
+        }
+        [HttpGet]
         [Route("GetExaminationRequests/{clinicId}")]
         public async Task<object> GetExaminationRequests([FromRoute] string clinicId) 
         {
@@ -114,6 +120,19 @@ namespace HospitalIsa.API.Controllers
         {
             return await _examinationContract.GetExaminationPriceByTypeAndClinic(model.ClinicId, model.Type);
         }
+        [HttpPost]
+        [Route("AddReview")]
+        public async Task<bool> AddReview([FromBody] ReviewModel review)
+        {
+            return await _examinationContract.AddReview(_mapper.Map<ReviewModel, ReviewPOCO>(review));
+        }
+        [HttpGet]
+        [Route("CheckIfAlreadyReviewed/{patientId}/{reviewedId}")]
+        public async Task<object> CheckIfAlreadyReviewed([FromRoute] string patientId, string reviewedId)
+        {
+            return await _examinationContract.CheckIfAlreadyReviewed(Guid.Parse(patientId), Guid.Parse(reviewedId));
+        }
+
 
     }
 }
