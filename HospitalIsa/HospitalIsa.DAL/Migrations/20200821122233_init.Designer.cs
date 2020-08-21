@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200818231355_ExaminationStatus")]
-    partial class ExaminationStatus
+    [Migration("20200821122233_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,8 @@ namespace HospitalIsa.DAL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");
+
+                    b.Property<double>("AverageMark");
 
                     b.Property<string>("City");
 
@@ -150,17 +152,17 @@ namespace HospitalIsa.DAL.Migrations
                     b.Property<Guid>("ReviewId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid?>("ClinicId");
-
                     b.Property<string>("Comment");
 
                     b.Property<int>("Mark");
 
+                    b.Property<Guid>("PatientId");
+
+                    b.Property<Guid>("ReviewedId");
+
                     b.HasKey("ReviewId");
 
-                    b.HasIndex("ClinicId");
-
-                    b.ToTable("Review");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Room", b =>
@@ -360,13 +362,6 @@ namespace HospitalIsa.DAL.Migrations
                         .WithMany("Prices")
                         .HasForeignKey("ClinicId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("HospitalIsa.DAL.Entites.Review", b =>
-                {
-                    b.HasOne("HospitalIsa.DAL.Entites.Clinic")
-                        .WithMany("Review")
-                        .HasForeignKey("ClinicId");
                 });
 
             modelBuilder.Entity("HospitalIsa.DAL.Entites.Room", b =>
