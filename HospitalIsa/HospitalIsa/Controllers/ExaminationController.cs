@@ -32,14 +32,12 @@ namespace HospitalIsa.API.Controllers
         {
             return await _examinationContract.GetClinicByTypeDateExamination(examinationRequest.Type, examinationRequest.DateTime);
         }
-
         [HttpPost]
         [Route("GetFreeExaminationAndDoctorByClinic")]
         public async Task<object> GetFreeExaminationAndDoctorByClinic(ExaminationRequestModel examinationRequest)
         {
             return await _examinationContract.GetFreeExaminationAndDoctorByClinic(examinationRequest.ClinicId, examinationRequest.Type, examinationRequest.DateTime);
         }
-
         [HttpPost]
         [Route("AddExamination")]
         public async Task<bool> AddExamination([FromBody] ExaminationModel model)
@@ -54,14 +52,24 @@ namespace HospitalIsa.API.Controllers
                 return false;
             }
         }
-
+        [HttpGet]
+        [Route("GetExaminationById/{examinationId}")]
+        public async Task<object> GetExaminationById([FromRoute] string examinationId)
+        {
+            return await _examinationContract.GetExaminationById(Guid.Parse(examinationId));
+        }
+        [HttpGet]
+        [Route("GetAllExaminationsByUserId/{userId}")]
+        public async Task<object> GetAllExaminationsByUserId([FromRoute] string userId)
+        {
+            return await _examinationContract.GetAllExaminationsByUserId(Guid.Parse(userId));
+        }
         [HttpGet]
         [Route("GetExaminationRequests/{clinicId}")]
         public async Task<object> GetExaminationRequests([FromRoute] string clinicId) 
         {
             return await _examinationContract.GetExaminationRequests(Guid.Parse(clinicId));
         }
-
         [HttpPost]
         [Route("AcceptExaminationRequest")]
         public async Task<bool> AcceptExaminationRequest(RoomExaminationModel model)
@@ -76,7 +84,6 @@ namespace HospitalIsa.API.Controllers
             } catch(Exception ex) { }
             return false;
         }
-
         [HttpPost]
         [Route("GetOccupancyForRoomByDate")]
         public async Task<object> GetRoomsByTime([FromBody] RoomDateModel model)
@@ -92,7 +99,6 @@ namespace HospitalIsa.API.Controllers
             }
 
         }
-
         [HttpPost]
         [Route("FirstAvailableByDate")]
         public async Task<object> FirstAvailableByDate([FromBody] RoomDateModel model)
@@ -114,6 +120,19 @@ namespace HospitalIsa.API.Controllers
         {
             return await _examinationContract.GetExaminationPriceByTypeAndClinic(model.ClinicId, model.Type);
         }
+        [HttpPost]
+        [Route("AddReview")]
+        public async Task<bool> AddReview([FromBody] ReviewModel review)
+        {
+            return await _examinationContract.AddReview(_mapper.Map<ReviewModel, ReviewPOCO>(review));
+        }
+        [HttpGet]
+        [Route("CheckIfAlreadyReviewed/{patientId}/{reviewedId}")]
+        public async Task<object> CheckIfAlreadyReviewed([FromRoute] string patientId, string reviewedId)
+        {
+            return await _examinationContract.CheckIfAlreadyReviewed(Guid.Parse(patientId), Guid.Parse(reviewedId));
+        }
+
 
     }
 }

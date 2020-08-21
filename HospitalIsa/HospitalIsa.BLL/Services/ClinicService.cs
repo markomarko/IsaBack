@@ -82,7 +82,11 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
         }
-
+        public async Task<object> GetAdminsFromClinic(Guid clinicId)
+        {
+            var employees = _employeeRepository.Find(emp => emp.ClinicId.Equals(clinicId)).ToList();
+            return employees.Where(admin => admin.Specialization.Equals(""));
+        }
         public async Task<object> GetClinicByAdminId(Guid adminId)
         {
             try

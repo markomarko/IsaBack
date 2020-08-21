@@ -18,7 +18,11 @@ namespace Hospital.MailService
                 {
                     mail.Subject = mailModel.Subject;
                     mail.From = new MailAddress("isa.hospital2020@gmail.com");
-                    mail.To.Add(new MailAddress(mailModel.Receiver));
+                    foreach (String email in mailModel.Receivers)
+                    {
+                        mail.To.Add(email);
+                    }
+                    
 
                     SmtpServer.Port = 587;
                     SmtpServer.Credentials = new System.Net.NetworkCredential("isa.hospital2020@gmail.com", "Hospital123");
