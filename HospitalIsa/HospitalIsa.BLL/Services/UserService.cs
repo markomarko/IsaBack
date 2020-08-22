@@ -94,7 +94,7 @@ namespace HospitalIsa.BLL.Services
                     return true;
                 }
                 else 
-                { 
+                {
                     var newEmployee = new Employee()
                     {
                         FirstName = model.FirstName,
@@ -106,7 +106,8 @@ namespace HospitalIsa.BLL.Services
                         Address = model.Address,
                         City = model.City,
                         State = model.State,
-                        ClinicId = Guid.Parse(model.ClinicId)
+                        ClinicId = Guid.Parse(model.ClinicId),
+                        Am = model.Am
                     };
                     try
                     {

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200821122233_init")]
-    partial class init
+    [Migration("20200822144244_amEmployee")]
+    partial class amEmployee
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,8 @@ namespace HospitalIsa.DAL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");
+
+                    b.Property<bool>("Am");
 
                     b.Property<double>("AverageMark");
 
@@ -236,6 +238,24 @@ namespace HospitalIsa.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("HospitalIsa.DAL.Entites.Vacation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Approved");
+
+                    b.Property<Guid>("doctorId");
+
+                    b.Property<DateTime>("endDate");
+
+                    b.Property<DateTime>("startDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vocations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -19,6 +19,7 @@ namespace HospitalIsa.DAL.Entites
         public string State { get; set; }
         public double AverageMark { get; set; }
         public string Specialization { get; set; }
+        public int Am { get; set; }
 
     }
 }
