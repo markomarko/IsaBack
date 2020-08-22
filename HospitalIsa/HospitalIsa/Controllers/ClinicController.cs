@@ -46,6 +46,12 @@ namespace HospitalIsa.API.Controllers
         [Route("GetAllClinics")]
         public async Task<object> GetAllClinics() => await _clinicContract.GetAllClinics();
         [HttpGet]
+        [Route("GetAdminsFromClinic/{clinicId}")]
+        public async Task<object> GetAdminsFromClinic([FromRoute] string clinicId)
+        {
+            return await _clinicContract.GetAdminsFromClinic(Guid.Parse(clinicId));
+        }
+        [HttpGet]
         [Route("GetClinicByAdminId/{adminId}")]
         public async Task<object> GetClinicByAdminId([FromRoute] string adminId)
         {

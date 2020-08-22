@@ -19,5 +19,9 @@ namespace HospitalIsa.BLL.Contracts
         Task<string> AddPreDefinitionExamination(ExaminationPOCO examinationPOCO);
         Task<bool> AcceptPreDefinitionExamination(ExaminationPOCO examinationPOCO);
         Task<object> GetPreDefinitionExamination();
+        Task<object> GetExaminationById(Guid examinationId);
+        Task<object> GetAllExaminationsByUserId(Guid userId);
+        Task<bool> AddReview(ReviewPOCO reviewPOCO);
+        Task<object> CheckIfAlreadyReviewed(Guid patientId, Guid reviewedId);
     }
 }

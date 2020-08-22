@@ -98,8 +98,9 @@ namespace HospitalIsa.API.Controllers
 
         [HttpPost]
         [Route("SendMail")]
-        public bool SendMail(MailModel mail)
+        public bool SendMail([FromBody] MailModel mail)
         {
+
             var mailModel =  _mapper.Map<MailModel, MailPOCO>(mail);
                ms.SendEmail(mailModel);
                 return true;

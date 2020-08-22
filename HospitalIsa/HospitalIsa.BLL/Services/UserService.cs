@@ -31,6 +31,7 @@ namespace HospitalIsa.BLL.Services
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IRepository<Price> _priceListRepository;
+        
 
 
         public UserService(IRepository<Patient> patientRepository,
@@ -43,7 +44,9 @@ namespace HospitalIsa.BLL.Services
                             SignInManager<User> signInManager,
                             UserManager<User> userManager,
                             IConfiguration config,
-                             IMapper mapper)
+                            IMapper mapper
+                            
+                            )
         {
             _patientRepository = patientRepository;
             _employeeRepository = employeeRepository;
@@ -55,7 +58,8 @@ namespace HospitalIsa.BLL.Services
             _signInManager = signInManager;
             _userManager = userManager;
             _config = config;
-            _mapper = mapper; 
+            _mapper = mapper;
+            
         }
         
         public async Task<bool> RegisterUser(RegisterPOCO model)
@@ -142,16 +146,14 @@ namespace HospitalIsa.BLL.Services
             }
             return false;
         }
-
         private bool PriceExists(Price newPrice)
         {
-           foreach (Price price in _priceListRepository.GetAll())
+           foreach (Price price in  _priceListRepository.GetAll())
                 if (price.ExaminationType.Equals(newPrice.ExaminationType) && (price.ClinicId.Equals(newPrice.ClinicId))){
                     return true;
                 }
             return false;
         }
-
         public async Task<bool> CheckIfSignedBefore(string userId)
         {
             try
@@ -244,7 +246,7 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<object> GetRegisterRequests()
         {
-            IEnumerable<User> users = _userRepository.GetAll();
+            IEnumerable<User> users =  _userRepository.GetAll();
             var results = users.Where(user => user.EmailConfirmed.Equals(false)).ToList();
             return results;
         }
@@ -252,7 +254,7 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var patient = await _userManager.FindByEmailAsync(mail.Receiver);
+                var patient = await _userManager.FindByEmailAsync(mail.Receivers.First());
                 patient.EmailConfirmed = true;
                 await _userManager.UpdateAsync(patient);
 
@@ -267,10 +269,10 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(mail.Receiver);
+                var user = await _userManager.FindByEmailAsync(mail.Receivers.First());
                 await _userManager.DeleteAsync(user);
                 var patient = _patientRepository.Find(x => x.PatientId.Equals(user.UserId)).First();
-                _patientRepository.Delete(patient);
+               await _patientRepository.Delete(patient);
                 return true;
             }
             catch (Exception e)
@@ -290,7 +292,6 @@ namespace HospitalIsa.BLL.Services
             }
             
         }
-
         public async Task<bool> UpdatePatient(PatientPOCO patient)
         {
             Patient deletePatient = _patientRepository.Find(p => p.Email.Equals(patient.Email)).First(); 
@@ -311,20 +312,29 @@ namespace HospitalIsa.BLL.Services
             if (result) return true;
                         return false;
         }
+        
         public async Task<List<string>> GetAllSpecializations()
         {
             Specialization specializations = new Specialization();
-            var allSpecializations = specializations.GetList() ;
-            return allSpecializations; 
-            
+            var allSpecializations = specializations.GetList();
+            return allSpecializations;
         }
-        public async Task<bool> DeleteEmployee(Guid employeeId)
+
+       
+        public async Task<bool> DeleteEmployee(EmployeePOCO employee)
         {
             try
             {
-                Employee deleteEmployee = _employeeRepository.Find(p => p.EmployeeId.Equals(employeeId)).First(); ;
+                var examinationOfDoctor = _examinationRepository.Find(examination => examination.DoctorId.Equals(employee.EmployeeId)).ToList();
+
+                foreach (Examination examination in examinationOfDoctor)
+                {
+                    if (examination.Status.Equals(ExaminationStatus.Requested) || examination.Status.Equals(ExaminationStatus.Accepted))
+                        return false;
+                }
+                Employee deleteEmployee = _employeeRepository.Find(p => p.EmployeeId.Equals(employee.EmployeeId)).First(); ;
                 await _employeeRepository.Delete(deleteEmployee);
-                User deleteUser = _userRepository.Find(p => p.UserId.Equals(employeeId)).First();
+                User deleteUser = _userRepository.Find(p => p.UserId.Equals(employee.EmployeeId)).First();
                 await _userRepository.Delete(deleteUser);
                 return true;
             } catch (Exception e)
@@ -366,7 +376,7 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receiver)).First();
+                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receivers)).First();
                 var vacation = _vocationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId)).First();
                 vacation.Approved = true;
                 _vocationRepository.Update(vacation);
@@ -382,7 +392,7 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receiver)).First();
+                var doctor = _employeeRepository.Find(x => x.Email.Equals(mailModel.Receivers)).First();
                 var vacation = _vocationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId)).First();
                 await _vocationRepository.Delete(vacation);
                 return true;

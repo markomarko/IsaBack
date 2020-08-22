@@ -20,7 +20,7 @@ namespace HospitalIsa.BLL.Contracts
         Task<List<string>> GetAllSpecializations();
         Task<bool> CheckIfSignedBefore(string userId);
         Task<bool> ChangePassword(ChangePasswordPOCO changePassword);
-        Task<bool> DeleteEmployee(Guid employeeId);
+        Task<bool> DeleteEmployee(EmployeePOCO employee);
         Task<bool> VacationRequest(VacationPOCO vocationPOCO);
         Task<object> GetVacationRequests();
         Task<bool> AcceptVacationRequests(MailPOCO mailModel);

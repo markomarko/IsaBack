@@ -63,26 +63,22 @@ namespace HospitalIsa.BLL.Services
             }
             return true;
         }
-
         public async Task<object> GetAllClinics() 
         {
             try
             {
                 List<Clinic> result = _clinicRepository.GetAll().ToList();
-                
-                //foreach (Clinic clinic in result)
-                //{
-                //    var cene = clinic.Prices;
-                //    var prices = _priceListRepository.Find(price => price.ClinicId.Equals(clinic.ClinicId)).ToList();
-                   
-                //}
                 return result;
             }catch(Exception e)
             {
                 throw e;
             }
         }
-
+        public async Task<object> GetAdminsFromClinic(Guid clinicId)
+        {
+            var employees = _employeeRepository.Find(emp => emp.ClinicId.Equals(clinicId)).ToList();
+            return employees.Where(admin => admin.Specialization.Equals(""));
+        }
         public async Task<object> GetClinicByAdminId(Guid adminId)
         {
             try
@@ -138,18 +134,22 @@ namespace HospitalIsa.BLL.Services
             return false;
         }
         public async Task<bool>  DeleteRoom(RoomPOCO room)
-        {
-            //TO DO : Implement check if room can be deleted - only if there is no upcoming examination booked in that room
-            if ( await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room)))
-                return true;
-             return false;
+        {           
+            var examinationsInRoom = _examinationRepository.Find(examination => examination.RoomId.Equals(room.RoomId)).ToList();
+            
+            foreach (Examination examination in examinationsInRoom)
+                {
+                if (examination.Status.Equals(ExaminationStatus.Accepted))
+                    return false;
+                }
+            await _roomRepository.Delete(_mapper.Map<RoomPOCO, Room>(room));
+            return true; 
         }
         public async Task<object> GetAllDoctorsFromClinic(Guid clinicId)
         {
             return  _employeeRepository.Find(doctor => doctor.ClinicId.Equals(clinicId)).ToList();
             
         }
-
         public async Task<object> GetPatientsByClinicId(Guid clinicId)
         {
             try
@@ -170,7 +170,6 @@ namespace HospitalIsa.BLL.Services
                 throw e;
             }
         }
-
         public async Task<object> GetPatientsByDoctorId(Guid doctorId)
         {
             try
