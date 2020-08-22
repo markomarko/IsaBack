@@ -264,5 +264,41 @@ namespace HospitalIsa.BLL.Services
             return (_priceListRepository.Find(price => price.ClinicId.Equals(clinicId)).Where(price => price.ExaminationType.Equals(type)).First());
             
         }
+
+        public async Task<string> AddPreDefinitionExamination(ExaminationPOCO examinationPOCO)
+        {
+            List<Examination> examinationsByDoctor = _examinationRepository.Find(x => x.DoctorId.Equals(examinationPOCO.DoctorId) && !x.Status.Equals(2)).ToList();
+            foreach (Examination ex in examinationsByDoctor)
+            {
+                if (ex.DateTime == examinationPOCO.DateTime)
+                {
+                    return "Doktor u to vreme vec ima zakazan pregled";
+                }
+            }
+            List<Examination> examinationsByRoom = _examinationRepository.Find(x => x.RoomId.Equals(examinationPOCO.RoomId) && !x.Status.Equals(2)).ToList();
+            foreach (Examination ex in examinationsByRoom)
+            {
+                if (ex.DateTime == examinationPOCO.DateTime)
+                {
+                    return "Soba je zazeta  tom terminu";
+                }
+            }
+            examinationPOCO.Status = ExaminationStatus.Requested;
+            examinationPOCO.PreDefined = true;
+            await _examinationRepository.Create(_mapper.Map<ExaminationPOCO, Examination>(examinationPOCO));
+            return "Uspesno dodat predefinisani pregled";
+        }
+
+        public async Task<bool> AcceptPreDefinitionExamination(ExaminationPOCO examinationPOCO)
+        {
+            examinationPOCO.Status = ExaminationStatus.Finished;
+            await _examinationRepository.Update(_mapper.Map<ExaminationPOCO, Examination>(examinationPOCO));//ako nije ceo model uzmi samo idPatient
+            return true;
+        }
+
+        public async Task<object> GetPreDefinitionExamination()
+        {
+            return _examinationRepository.Find(x => x.PreDefined.Equals(true) && !x.Status.Equals(ExaminationStatus.Accepted)).ToList();
+        }
     }
 }
