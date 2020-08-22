@@ -99,11 +99,11 @@ namespace HospitalIsa.BLL.Services
         {
             var examinations = _examinationRepository.Find(x => x.DateTime.Equals(roomDatePOCO.RoomId) && !x.Status.Equals(Accepted)).ToList();
 
-            var ex = GenerateFreeExamination(examinations, roomDatePOCO.Date).First();
+            var ex = GenerateFreeExamination(examinations, roomDatePOCO.Date, 0).First();
             while (ex == null)
             {
                 roomDatePOCO.Date.AddDays(1);
-                ex = GenerateFreeExamination(examinations, roomDatePOCO.Date).First();
+                ex = GenerateFreeExamination(examinations, roomDatePOCO.Date, 0).First();
             }
 
             return ex;
@@ -212,7 +212,7 @@ namespace HospitalIsa.BLL.Services
                 }
                 catch (Exception e) { }
                 // zauzeti pregledi za odredjenog doktora
-                var freeExaminations = GenerateFreeExamination(examinationsOfSpecificDoctor, dateTime);
+                var freeExaminations = GenerateFreeExamination(examinationsOfSpecificDoctor, dateTime, doctor.Am);
                 DoctorsFreeExaminationsPOCO res = new DoctorsFreeExaminationsPOCO();
 
                 res.Doctor = doctor;
@@ -242,25 +242,38 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> GetOccupancyForRoomByDate(RoomDatePOCO roomDatePOCO)
         {
             List<Examination> result = new List<Examination>();
-            var examinations = _examinationRepository.Find(x => x.RoomId.Equals(roomDatePOCO.RoomId)).ToList();
+            var examinations = _examinationRepository.Find(x => x.RoomId.Equals(roomDatePOCO.RoomId) && x.Status!=ExaminationStatus.Finished).ToList();
             foreach (var exm in examinations)
             {
-                if (exm.DateTime.Equals(roomDatePOCO.Date))
-                {
                     result.Add(exm);
-                }
             }
             return result;
         }
-        private List<DateTime> GenerateFreeExamination(List<Examination> occupiedExamination, DateTime dateTimeOfExamination)
+        private List<DateTime> GenerateFreeExamination(List<Examination> occupiedExamination, DateTime dateTimeOfExamination, int am)
         {
-            TimeSpan startTime = new TimeSpan(7, 0, 0);
+            TimeSpan startTime;
+            TimeSpan endTime;
+            if (am==1)
+            {
+                startTime = new TimeSpan(8, 0, 0);
 
-            TimeSpan endTime = new TimeSpan(15, 0, 0);
+                endTime = new TimeSpan(14, 0, 0);
+            }
+            if (am==2)
+            {
+                startTime = new TimeSpan(14, 0, 0);
+
+                endTime = new TimeSpan(20, 0, 0);
+            }else
+            {
+                startTime = new TimeSpan(8, 0, 0);
+
+                endTime = new TimeSpan(20, 0, 0);
+            }
 
             var freeExamination = new List<DateTime>();
 
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < 12; i++)
             {
                 if (occupiedExamination.FirstOrDefault(x => x.DateTime.TimeOfDay.Equals(startTime)) == null)
                 {

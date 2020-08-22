@@ -44,6 +44,8 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<string>("Address");
 
+                    b.Property<int>("Am");
+
                     b.Property<double>("AverageMark");
 
                     b.Property<string>("City");

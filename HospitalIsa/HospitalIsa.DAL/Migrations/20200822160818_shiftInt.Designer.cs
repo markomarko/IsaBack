@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalIsa.DAL.Migrations
 {
     [DbContext(typeof(CenterContext))]
-    [Migration("20200821203620_SpecializationUpdate")]
-    partial class SpecializationUpdate
+    [Migration("20200822160818_shiftInt")]
+    partial class shiftInt
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,8 @@ namespace HospitalIsa.DAL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");
+
+                    b.Property<int>("Am");
 
                     b.Property<double>("AverageMark");
 

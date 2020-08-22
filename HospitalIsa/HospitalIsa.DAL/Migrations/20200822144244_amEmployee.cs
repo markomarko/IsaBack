@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HospitalIsa.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class amEmployee : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -116,6 +116,21 @@ namespace HospitalIsa.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.ReviewId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vocations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    doctorId = table.Column<Guid>(nullable: false),
+                    startDate = table.Column<DateTime>(nullable: false),
+                    endDate = table.Column<DateTime>(nullable: false),
+                    Approved = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vocations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -238,7 +253,8 @@ namespace HospitalIsa.DAL.Migrations
                     City = table.Column<string>(nullable: true),
                     State = table.Column<string>(nullable: true),
                     AverageMark = table.Column<double>(nullable: false),
-                    Specialization = table.Column<string>(nullable: true)
+                    Specialization = table.Column<string>(nullable: true),
+                    Am = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -382,6 +398,9 @@ namespace HospitalIsa.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Rooms");
+
+            migrationBuilder.DropTable(
+                name: "Vocations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

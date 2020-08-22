@@ -18,6 +18,7 @@ namespace HospitalIsa.BLL.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Specialization { get; set; }
+        public int Am { get; set; }
 
     }
 }

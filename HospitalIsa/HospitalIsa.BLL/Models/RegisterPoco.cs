@@ -19,6 +19,7 @@ namespace HospitalIsa.BLL.Models
         public string UserRole { get; set; }
         public string Specialization { get; set; }
         public string ClinicId { get; set; }
+        public int Am { get; set; }
 
     }
 }
