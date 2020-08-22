@@ -64,6 +64,8 @@ namespace HospitalIsa.API.Services
             CreateMap<Review, ReviewPOCO>();
             CreateMap<VacationPOCO, Vacation>();
             CreateMap<Vacation, VacationPOCO>();
+            CreateMap<Examination, ExaminationPOCO>();
+            CreateMap<ExaminationPOCO, Examination>();
 
 
         }
