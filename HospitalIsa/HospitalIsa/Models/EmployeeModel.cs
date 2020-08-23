@@ -19,5 +19,6 @@ namespace HospitalIsa.API.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Specialization { get; set; }
+        public int Am { get; set; }
     }
 }

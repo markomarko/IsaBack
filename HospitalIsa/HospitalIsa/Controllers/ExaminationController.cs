@@ -3,6 +3,8 @@ using HospitalIsa.API.Models;
 using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +54,41 @@ namespace HospitalIsa.API.Controllers
                 return false;
             }
         }
+
+        [HttpPost]
+        [Route("AddPreDefinitionExamination")]
+        public async Task<object> AddPreDefinitionExamination([FromBody] ExaminationModel model)
+        {
+            try
+            {
+                var result = await _examinationContract.AddPreDefinitionExamination(_mapper.Map<ExaminationModel, ExaminationPOCO>(model));
+                return JsonConvert.SerializeObject(result);
+            } catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPreDefinitionExamination")]
+        public async Task<object> GetPreDefinitionExamination() => await _examinationContract.GetPreDefinitionExamination();
+
+        [HttpPost]
+        [Route("AcceptPreDefinitionExamination")]
+        public async Task<bool> AcceptPreDefinitionExamination([FromBody]ExaminationModel model)
+        {
+            try
+            {
+                if (await _examinationContract.AcceptPreDefinitionExamination(_mapper.Map<ExaminationModel, ExaminationPOCO>(model)));
+                {
+                    //ms.SendEmail(mailModel);
+                    return true;
+                }
+            }
+            catch (Exception ex) { }
+            return false;
+        }
+
         [HttpGet]
         [Route("GetExaminationById/{examinationId}")]
         public async Task<object> GetExaminationById([FromRoute] string examinationId)
