@@ -141,7 +141,7 @@ namespace HospitalIsa.BLL.Services
             List<Examination> examinationRequests = new List<Examination>();
             foreach (var doctor in employees)
             {
-                examinationRequests.AddRange(_examinationRepository.Find(x => x.DoctorId.Equals(doctor.EmployeeId)).ToList());
+                examinationRequests.AddRange(_examinationRepository.Find(x => x.DoctorId.Equals(doctor.EmployeeId) && x.PreDefined==false).ToList());
             }
             List<Examination> results = examinationRequests.Where(x => x.Status.Equals(Requested)).ToList();
             return results;
@@ -373,6 +373,21 @@ namespace HospitalIsa.BLL.Services
 
         public async Task<string> AddPreDefinitionExamination(ExaminationPOCO examinationPOCO)
         {
+            var doctor = _employeeRepository.Find(x => x.EmployeeId.Equals(examinationPOCO.DoctorId)).First();
+            if (doctor.Am == 1)
+            {
+                if(examinationPOCO.DateTime.Hour > 14) 
+                {
+                    return "Izabrani doktor radi suprotnoj smenu";
+                }
+
+            } else
+            {
+                if (examinationPOCO.DateTime.Hour < 14)
+                {
+                    return "Izabrani doktor radi suprotnoj smenu";
+                }
+            }
             List<Examination> examinationsByDoctor = _examinationRepository.Find(x => x.DoctorId.Equals(examinationPOCO.DoctorId) && !x.Status.Equals(2)).ToList();
             foreach (Examination ex in examinationsByDoctor)
             {
