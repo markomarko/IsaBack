@@ -169,7 +169,12 @@ namespace HospitalIsa.API.Controllers
         {
             return await _examinationContract.CheckIfAlreadyReviewed(Guid.Parse(patientId), Guid.Parse(reviewedId));
         }
-
+        [HttpGet]
+        [Route("GetAllFinishedExaminationsByClinic/{clinicId}")]
+        public async Task<object>GetAllFinishedExaminationsByClinic([FromRoute] string clinicId)
+        {
+            return await _examinationContract.GetAllFinishedExaminationsByClinic(Guid.Parse(clinicId));
+        }
 
     }
 }

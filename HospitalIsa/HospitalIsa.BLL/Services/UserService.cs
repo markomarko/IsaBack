@@ -295,9 +295,7 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<bool> UpdatePatient(PatientPOCO patient)
         {
-            Patient deletePatient = _patientRepository.Find(p => p.Email.Equals(patient.Email)).First(); 
-            await _patientRepository.Delete(deletePatient);
-            var result = await _patientRepository.Create(_mapper.Map<PatientPOCO, Patient>(patient));
+            var result = await _patientRepository.Update(_mapper.Map<PatientPOCO, Patient>(patient));
             if (result)
             {
                 return true;
@@ -306,22 +304,23 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<bool> UpdateEmployee(EmployeePOCO employee)
         {
-            
-            Employee deleteEmployee = _employeeRepository.Find(p => p.Email.Equals(employee.Email)).First(); ;
-            await _employeeRepository.Delete(deleteEmployee); 
-            var result = await _employeeRepository.Create(_mapper.Map<EmployeePOCO, Employee>(employee));
+            var examinationOfDoctor = _examinationRepository.Find(examination => examination.DoctorId.Equals(employee.EmployeeId)).ToList();
+
+            foreach (Examination examination in examinationOfDoctor)
+            {
+                if (examination.Status.Equals(ExaminationStatus.Accepted))
+                    return false;
+            }
+            var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
             if (result) return true;
                         return false;
-        }
-        
+        }     
         public async Task<List<string>> GetAllSpecializations()
         {
             Specialization specializations = new Specialization();
             var allSpecializations = specializations.GetList();
             return allSpecializations;
-        }
-
-       
+        }    
         public async Task<bool> DeleteEmployee(EmployeePOCO employee)
         {
             try
@@ -344,7 +343,6 @@ namespace HospitalIsa.BLL.Services
             }
             
         }
-
         public async Task<bool> VacationRequest(VacationPOCO vocationPOCO)
         {
             var examinations = _examinationRepository.Find(x => x.DoctorId.Equals(vocationPOCO.doctorId) && !x.Status.Equals(2)).ToList();
@@ -365,14 +363,12 @@ namespace HospitalIsa.BLL.Services
             await _vocationRepository.Create(_mapper.Map<VacationPOCO, Vacation>(vocationPOCO));
             return true;
         }
-
         public async Task<object> GetVacationRequests()
         {
             IEnumerable<Vacation> vacations = _vocationRepository.GetAll();
             var results = vacations.Where(x => x.Approved.Equals(false)).ToList();
             return results;
         }
-
         public async Task<bool> AcceptVacationRequests(MailPOCO mailModel)
         {
             try
@@ -388,7 +384,6 @@ namespace HospitalIsa.BLL.Services
                 return false;
             }
         }
-
         public async Task<bool> DenyVacationRequests(MailPOCO mailModel)
         {
             try

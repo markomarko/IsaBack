@@ -69,19 +69,21 @@ namespace HospitalIsa.BLL.Services
         public async Task<bool> AddExamination(ExaminationPOCO examinationPOCO)
         {
             var clinic = await GetClinicByAdminId(examinationPOCO.DoctorId) as Clinic;
-            PricePOCO price = await GetExaminationPriceByTypeAndClinic(clinic.ClinicId, examinationPOCO.Type) as PricePOCO;
+            var price = await GetExaminationPriceByTypeAndClinic(clinic.ClinicId, examinationPOCO.Type) as Price;
+            var examinationPrice = price.DiscountedPrice;
+            
             try
             {
                 var newExamination = new Examination()
                 {
                     Id = Guid.NewGuid(),
                     DateTime = examinationPOCO.DateTime,
-                    // Doctor = _mapper.Map<EmployeePOCO, Employee>(examinationPOCO.Doctor),
+                    Duration = TimeSpan.FromMinutes(30),
                     DoctorId = examinationPOCO.DoctorId,
                     PatientId = examinationPOCO.PatientId,
                     Type = examinationPOCO.Type,
                     Status = ExaminationStatus.Requested,
-                    Price = 1000 //ZBG DEBAGOVANJAs
+                    Price = examinationPrice
                 };
           
 
@@ -176,7 +178,7 @@ namespace HospitalIsa.BLL.Services
             }
             else
             {
-                
+
                 foreach (var doctor in employees)
                 {
                     bool t = true;
@@ -195,7 +197,8 @@ namespace HospitalIsa.BLL.Services
                                 date = date.AddDays(1);
                             }
                         }
-                        if(t) { 
+                        if (t)
+                        {
                             doctors.Add(doctor);
                         }
                     }
@@ -214,12 +217,9 @@ namespace HospitalIsa.BLL.Services
                 // zauzeti pregledi za odredjenog doktora
                 var freeExaminations = GenerateFreeExamination(examinationsOfSpecificDoctor, dateTime, doctor.Am);
                 DoctorsFreeExaminationsPOCO res = new DoctorsFreeExaminationsPOCO();
-
                 res.Doctor = doctor;
                 res.FreeExaminations = freeExaminations;
-                bool b = false;
-                if (freeExaminations.Count() != 0)
-                b = true;
+                bool b = true;
                 List<Vacation> vacations = _vacationRepository.Find(x => x.doctorId.Equals(doctor.EmployeeId) && x.Approved.Equals(true)).ToList();
                 foreach (Vacation vocation in vacations)
                 {
@@ -234,7 +234,6 @@ namespace HospitalIsa.BLL.Services
                     }
                 }
                 if (freeExaminations.Count() != 0 && b)
-
                     result.Add(res);
             }
             return result;
@@ -293,8 +292,9 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<object> GetExaminationPriceByTypeAndClinic(Guid clinicId, string type)
         {
-            return (_priceListRepository.Find(price => price.ClinicId.Equals(clinicId)).Where(price => price.ExaminationType.Equals(type)).First());
-
+            List<Price> pricesOfClinic = _priceListRepository.Find(price => price.ClinicId.Equals(clinicId)).ToList();
+            var result = pricesOfClinic.Where(price => price.ExaminationType.Equals(type)).First();
+            return result;
         }
         public async Task<object> GetExaminationById(Guid examinationId)
         {
@@ -371,6 +371,21 @@ namespace HospitalIsa.BLL.Services
             }
         }
 
+
+        public async Task<object> GetAllFinishedExaminationsByClinic(Guid clinicId)
+        {
+            List<Room> listOfRoomsFromClinic = _roomRepository.Find(x => x.ClinicId.Equals(clinicId)).ToList();
+            List<Examination> result = new List<Examination>();
+            foreach (Examination examination in _examinationRepository.GetAll())
+            {
+                foreach(Room room in listOfRoomsFromClinic)
+                {
+                    if (examination.RoomId.Equals(room.RoomId) && examination.Status.Equals(ExaminationStatus.Finished))
+                        result.Add(examination);
+                }
+            }
+            return result;
+
         public async Task<string> AddPreDefinitionExamination(ExaminationPOCO examinationPOCO)
         {
             var doctor = _employeeRepository.Find(x => x.EmployeeId.Equals(examinationPOCO.DoctorId)).First();
@@ -420,6 +435,7 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> GetPreDefinitionExamination()
         {
             return _examinationRepository.Find(x => x.PreDefined.Equals(true) && !x.Status.Equals(ExaminationStatus.Accepted)).ToList();
+
         }
     }
     

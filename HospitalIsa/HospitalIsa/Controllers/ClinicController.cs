@@ -145,5 +145,19 @@ namespace HospitalIsa.API.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("GetAllReviewsFromClinic/{clinicId}")]
+        public async Task<object> GetAllReviewsFromClinic([FromRoute] string clinicId)
+        {
+            try
+            {
+                return await _clinicContract.GetAllReviewsFromClinic(Guid.Parse(clinicId));
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
