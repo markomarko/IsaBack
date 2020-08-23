@@ -69,7 +69,7 @@ namespace HospitalIsa.DAL.Repositories
             try
             {
                 //await _centerContext.SaveChangesAsync();
-                await _centerContext.SaveChangesAsync();
+                 _centerContext.SaveChanges();
 
                 return true;
             }

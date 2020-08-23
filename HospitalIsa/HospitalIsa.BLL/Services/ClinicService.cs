@@ -21,6 +21,7 @@ namespace HospitalIsa.BLL.Services
         private readonly IMapper _mapper;
         private readonly IRepository<Examination> _examinationRepository;
         private readonly IRepository<Patient> _patientRepository;
+        private readonly IRepository<Review> _reviewRepository;
 
         public ClinicService(IRepository<Clinic> clinicRepository,
                                 IRepository<Employee> employeeRepository,
@@ -29,7 +30,8 @@ namespace HospitalIsa.BLL.Services
                                 IRepository<Price> priceListRepository,
                                 IMapper mapper,
                                 IRepository<Examination> examinationRepository,
-                                IRepository<Patient> patientRepository
+                                IRepository<Patient> patientRepository,
+                                IRepository<Review> reviewRepository
             )
         {
             _clinicRepository = clinicRepository;
@@ -40,6 +42,7 @@ namespace HospitalIsa.BLL.Services
             _priceListRepository = priceListRepository;
             _mapper = mapper;
             _patientRepository = patientRepository;
+            _reviewRepository = reviewRepository;
         }
 
         public async Task<bool> AddClinic(ClinicPOCO clinic)
@@ -114,8 +117,8 @@ namespace HospitalIsa.BLL.Services
         public async Task<bool> UpdatePrice(PricePOCO price)
         {
             var priceToChange = _priceListRepository.Find(pr => pr.PriceId.Equals(price.PriceId)).First();
-            await _priceListRepository.Delete(priceToChange);
-            if (await _priceListRepository.Create(_mapper.Map<PricePOCO, Price>(price)))
+            //await _priceListRepository.Delete(priceToChange);
+            if (await _priceListRepository.Update(_mapper.Map<PricePOCO, Price>(price)))
                 return true;
             return false;
         }
@@ -147,8 +150,11 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<object> GetAllDoctorsFromClinic(Guid clinicId)
         {
-            return  _employeeRepository.Find(doctor => doctor.ClinicId.Equals(clinicId)).ToList();
-            
+
+            var employees = _employeeRepository.Find(doctor => doctor.ClinicId.Equals(clinicId)).ToList();
+            return employees.Where(employee => !employee.Specialization.Equals(""));
+
+
         }
         public async Task<object> GetPatientsByClinicId(Guid clinicId)
         {
@@ -158,8 +164,8 @@ namespace HospitalIsa.BLL.Services
                 List<object> result = new List<object>();
                 foreach (Examination examination in examinations)
                 {
-                    Room room = _roomRepository.Find(r => r.RoomId.Equals(examination.RoomId)).First(); //puca ako je roomId GUID "0000-000..."
-                    if (room.ClinicId.Equals(clinicId))
+                    foreach (Room room in _roomRepository.GetAll())
+                     if (room.ClinicId.Equals(clinicId))
                     {
                         result.Add(_patientRepository.Find(patient => patient.PatientId.Equals(examination.PatientId)).First());
                     }
@@ -189,6 +195,11 @@ namespace HospitalIsa.BLL.Services
             {
                 throw e;
             }
+        }
+
+        public async Task<object> GetAllReviewsFromClinic(Guid clinicId)
+        {
+            return _reviewRepository.Find(review => review.ReviewedId.Equals(clinicId)).ToList();
         }
     }
 }

@@ -20,5 +20,6 @@ namespace HospitalIsa.BLL.Contracts
         Task<object> GetAllExaminationsByUserId(Guid userId);
         Task<bool> AddReview(ReviewPOCO reviewPOCO);
         Task<object> CheckIfAlreadyReviewed(Guid patientId, Guid reviewedId);
+        Task<object> GetAllFinishedExaminationsByClinic(Guid clinicId);
     }
 }

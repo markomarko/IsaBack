@@ -21,5 +21,6 @@ namespace HospitalIsa.BLL.Contracts
        Task<object> GetAllDoctorsFromClinic(Guid clinicId);
         Task<object> GetPatientsByClinicId(Guid clinicId);
         Task<object> GetPatientsByDoctorId(Guid doctorId);
+        Task<object> GetAllReviewsFromClinic(Guid clinicId);
     }
 }
