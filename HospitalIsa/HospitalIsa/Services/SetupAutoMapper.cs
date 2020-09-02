@@ -68,6 +68,9 @@ namespace HospitalIsa.API.Services
             CreateMap<ExaminationPOCO, Examination>();
 
 
+            CreateMap<RegisterModel, PatientPOCO>();
+
+
         }
        
     }

@@ -4,6 +4,7 @@ using HospitalIsa.API.Models;
 using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Models;
 using HospitalIsa.DAL.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -55,9 +56,9 @@ namespace HospitalIsa.API.Controllers
         }
         [HttpPost]
         [Route("UpdatePatient")]
-        public async Task<bool> UpdatePatient([FromBody] PatientModel patient)
+        public async Task<bool> UpdatePatient([FromBody] RegisterModel patient)
         {
-            var result = await _userContract.UpdatePatient(_mapper.Map<PatientModel, PatientPOCO> (patient));
+            var result = await _userContract.UpdatePatient(_mapper.Map<RegisterModel, PatientPOCO> (patient));
             if (result)
             {
                 return true;
@@ -70,14 +71,13 @@ namespace HospitalIsa.API.Controllers
         
         [HttpPost]
         [Route("UpdateEmployee")]
-        public async Task<bool> UpdateEmployee([FromBody] EmployeeModel employee)
+        public async Task<bool> UpdateEmployee([FromBody] RegisterModel employee)
         {
-            var result = await _userContract.UpdateEmployee(_mapper.Map<EmployeeModel, EmployeePOCO>(employee));
+            var result = await _userContract.UpdateEmployee(_mapper.Map<RegisterModel, RegisterPOCO>(employee));
             if (result) return true;
                         return false;
             
         }
-        
         [HttpGet]
         [Route("GetAllSpecializations")]
         public async Task<List<string>> GetAllSpecializations()

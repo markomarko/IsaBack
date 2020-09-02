@@ -11,6 +11,8 @@ namespace HospitalIsa.API.Models
         public Guid ClinicId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
+        public float Longitude { get; set; }
+        public float Latitude { get; set; }
         public string About { get; set; }
         public List<EmployeeModel> Employees { get; set; }
         public List<RoomModel> Rooms { get; set; }

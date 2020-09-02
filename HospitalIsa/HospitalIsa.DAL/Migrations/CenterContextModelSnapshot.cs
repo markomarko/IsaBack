@@ -30,6 +30,10 @@ namespace HospitalIsa.DAL.Migrations
 
                     b.Property<double>("AverageMark");
 
+                    b.Property<float>("Latitude");
+
+                    b.Property<float>("Longitude");
+
                     b.Property<string>("Name");
 
                     b.HasKey("ClinicId");
