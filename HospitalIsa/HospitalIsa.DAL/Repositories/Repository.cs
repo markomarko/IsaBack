@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
 
 namespace HospitalIsa.DAL.Repositories
 {
@@ -13,7 +14,7 @@ namespace HospitalIsa.DAL.Repositories
 
         private readonly DbSet<E> _dbSet;
         private readonly CenterContext _centerContext;
-
+        private static readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         public Repository(CenterContext centerContext)
         {
             _centerContext = centerContext;
@@ -39,47 +40,59 @@ namespace HospitalIsa.DAL.Repositories
 
         public async Task<bool> Delete(E entity)
         {
-            try
+            lock (_lock)
             {
-                _dbSet.Remove(entity); 
-                await _centerContext.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                return false;
-                throw e;
-            }
+                try
+                {
+                    _dbSet.Remove(entity);
+                    _centerContext.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return false;
+                    throw e;
+                }
 
-            return true;
+                return true;
+            }
+           
         }
 
         public IEnumerable<E> Find(Func<E, bool> predicate)
         {
-            return _dbSet.Where(predicate);
+            lock (_lock)
+            {
+                return _dbSet.Where(predicate);
+            }
 
         }
 
         public  IEnumerable<E> GetAll()
         {
-            return _dbSet;
+            lock (_lock)
+            {
+                return _dbSet;
+            }
+            
         }
 
         public async Task<bool> Update(E entity)
         {
-            try
+            lock ( _lock)
             {
-                //await _centerContext.SaveChangesAsync();
-                 _centerContext.SaveChanges();
+                try
+                {
+                    _centerContext.SaveChanges();
 
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-                throw e;
-            }
-            
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                    throw e;
+                }
 
+            }
 
         }
     }
