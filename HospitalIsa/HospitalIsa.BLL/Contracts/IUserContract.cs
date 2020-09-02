@@ -11,7 +11,7 @@ namespace HospitalIsa.BLL.Contracts
     {
         Task<bool> RegisterUser(RegisterPOCO model);
         Task<bool> UpdatePatient(PatientPOCO patient);
-        Task<bool> UpdateEmployee(EmployeePOCO employee);
+        Task<bool> UpdateEmployee(RegisterPOCO employee);
         Task<object> LoginUser(LoginPOCO loginPOCO);
         Task<object> GetRegisterRequests();
         Task<bool> AcceptPatientRegisterRequest(MailPOCO mail);

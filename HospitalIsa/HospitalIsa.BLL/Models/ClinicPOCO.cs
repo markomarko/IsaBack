@@ -10,6 +10,8 @@ namespace HospitalIsa.BLL.Models
         public Guid ClinicId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
+        public float Longitude { get; set; }
+        public float Latitude { get; set; }
         public string About { get; set; }
         public List<EmployeePOCO> Employees { get; set; }
         public List<RoomPOCO> Rooms { get; set; }

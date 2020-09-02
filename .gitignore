@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+HospitalIsa/HospitalIsa.DAL/Migrations/20200902002333_init.cs
+HospitalIsa/HospitalIsa.DAL/Migrations/20200902002333_init.Designer.cs

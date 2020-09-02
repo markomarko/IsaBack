@@ -71,7 +71,7 @@ namespace HospitalIsa.BLL.Services
             var clinic = await GetClinicByAdminId(examinationPOCO.DoctorId) as Clinic;
             var price = await GetExaminationPriceByTypeAndClinic(clinic.ClinicId, examinationPOCO.Type) as Price;
             var examinationPrice = price.DiscountedPrice;
-            
+
             try
             {
                 var newExamination = new Examination()
@@ -85,9 +85,9 @@ namespace HospitalIsa.BLL.Services
                     Status = ExaminationStatus.Requested,
                     Price = examinationPrice
                 };
-          
 
-            
+
+
                 await _examinationRepository.Create(newExamination);
                 return true;
             }
@@ -143,7 +143,7 @@ namespace HospitalIsa.BLL.Services
             List<Examination> examinationRequests = new List<Examination>();
             foreach (var doctor in employees)
             {
-                examinationRequests.AddRange(_examinationRepository.Find(x => x.DoctorId.Equals(doctor.EmployeeId) && x.PreDefined==false).ToList());
+                examinationRequests.AddRange(_examinationRepository.Find(x => x.DoctorId.Equals(doctor.EmployeeId) && x.PreDefined == false).ToList());
             }
             List<Examination> results = examinationRequests.Where(x => x.Status.Equals(Requested)).ToList();
             return results;
@@ -241,10 +241,10 @@ namespace HospitalIsa.BLL.Services
         public async Task<object> GetOccupancyForRoomByDate(RoomDatePOCO roomDatePOCO)
         {
             List<Examination> result = new List<Examination>();
-            var examinations = _examinationRepository.Find(x => x.RoomId.Equals(roomDatePOCO.RoomId) && x.Status!=ExaminationStatus.Finished).ToList();
+            var examinations = _examinationRepository.Find(x => x.RoomId.Equals(roomDatePOCO.RoomId) && x.Status != ExaminationStatus.Finished).ToList();
             foreach (var exm in examinations)
             {
-                    result.Add(exm);
+                result.Add(exm);
             }
             return result;
         }
@@ -252,18 +252,18 @@ namespace HospitalIsa.BLL.Services
         {
             TimeSpan startTime;
             TimeSpan endTime;
-            if (am==1)
+            if (am == 1)
             {
                 startTime = new TimeSpan(8, 0, 0);
 
                 endTime = new TimeSpan(14, 0, 0);
             }
-            if (am==2)
+            if (am == 2)
             {
                 startTime = new TimeSpan(14, 0, 0);
 
                 endTime = new TimeSpan(20, 0, 0);
-            }else
+            } else
             {
                 startTime = new TimeSpan(8, 0, 0);
 
@@ -318,15 +318,15 @@ namespace HospitalIsa.BLL.Services
         {
             try
             {
-                if(await _reviewRepository.Create(_mapper.Map<ReviewPOCO, Review>(reviewPOCO)))
+                if (await _reviewRepository.Create(_mapper.Map<ReviewPOCO, Review>(reviewPOCO)))
                 {
-                    if(await UpdateAverageMark(reviewPOCO.Mark, reviewPOCO.ReviewedId))
+                    if (await UpdateAverageMark(reviewPOCO.Mark, reviewPOCO.ReviewedId))
                     {
                         return true;
                     }
-                    
+
                 }
-                return false;   
+                return false;
             }
             catch (Exception e)
             {
@@ -338,7 +338,7 @@ namespace HospitalIsa.BLL.Services
             List<Review> rev = _reviewRepository.Find(review => review.PatientId.Equals(patientId)).ToList();
             foreach (Review review in rev)
             {
-                if (review.ReviewedId.Equals(reviewedId)) 
+                if (review.ReviewedId.Equals(reviewedId))
                 {
                     return review;
                 }
@@ -351,7 +351,7 @@ namespace HospitalIsa.BLL.Services
             {
                 List<Review> allReviews = _reviewRepository.Find(review => review.ReviewedId.Equals(reviewedId)).ToList();
                 double sum = allReviews.Sum(mark => mark.Mark);
-                double newAverageMark =  sum / allReviews.Count();
+                double newAverageMark = sum / allReviews.Count();
                 var clinicToUpdate = _clinicRepository.GetAll().Where(clinic => clinic.ClinicId.Equals(reviewedId)).FirstOrDefault();
                 if (clinicToUpdate != null)
                 {
@@ -366,11 +366,10 @@ namespace HospitalIsa.BLL.Services
                     await _employeeRepository.Update(doctorToUpdate);
                     return true;
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw e;
             }
         }
-
 
         public async Task<object> GetAllFinishedExaminationsByClinic(Guid clinicId)
         {
@@ -378,66 +377,66 @@ namespace HospitalIsa.BLL.Services
             List<Examination> result = new List<Examination>();
             foreach (Examination examination in _examinationRepository.GetAll())
             {
-                foreach(Room room in listOfRoomsFromClinic)
+                foreach (Room room in listOfRoomsFromClinic)
                 {
                     if (examination.RoomId.Equals(room.RoomId) && examination.Status.Equals(ExaminationStatus.Finished))
                         result.Add(examination);
                 }
             }
             return result;
-
-        public async Task<string> AddPreDefinitionExamination(ExaminationPOCO examinationPOCO)
-        {
-            var doctor = _employeeRepository.Find(x => x.EmployeeId.Equals(examinationPOCO.DoctorId)).First();
-            if (doctor.Am == 1)
-            {
-                if(examinationPOCO.DateTime.Hour > 14) 
-                {
-                    return "Izabrani doktor radi suprotnoj smenu";
-                }
-
-            } else
-            {
-                if (examinationPOCO.DateTime.Hour < 14)
-                {
-                    return "Izabrani doktor radi suprotnoj smenu";
-                }
-            }
-            List<Examination> examinationsByDoctor = _examinationRepository.Find(x => x.DoctorId.Equals(examinationPOCO.DoctorId) && !x.Status.Equals(2)).ToList();
-            foreach (Examination ex in examinationsByDoctor)
-            {
-                if (ex.DateTime == examinationPOCO.DateTime)
-                {
-                    return "Doktor u to vreme vec ima zakazan pregled";
-                }
-            }
-            List<Examination> examinationsByRoom = _examinationRepository.Find(x => x.RoomId.Equals(examinationPOCO.RoomId) && !x.Status.Equals(2)).ToList();
-            foreach (Examination ex in examinationsByRoom)
-            {
-                if (ex.DateTime == examinationPOCO.DateTime)
-                {
-                    return "Soba je zazeta  tom terminu";
-                }
-            }
-            examinationPOCO.Status = ExaminationStatus.Requested;
-            examinationPOCO.PreDefined = true;
-            await _examinationRepository.Create(_mapper.Map<ExaminationPOCO, Examination>(examinationPOCO));
-            return "Uspesno dodat predefinisani pregled";
         }
+            public async Task<string> AddPreDefinitionExamination(ExaminationPOCO examinationPOCO)
+            {
+                var doctor = _employeeRepository.Find(x => x.EmployeeId.Equals(examinationPOCO.DoctorId)).First();
+                if (doctor.Am == 1)
+                {
+                    if (examinationPOCO.DateTime.Hour > 14)
+                    {
+                        return "Izabrani doktor radi suprotnoj smenu";
+                    }
 
-        public async Task<bool> AcceptPreDefinitionExamination(ExaminationPOCO examinationPOCO)
-        {
-            examinationPOCO.Status = ExaminationStatus.Finished;
-            await _examinationRepository.Update(_mapper.Map<ExaminationPOCO, Examination>(examinationPOCO));//ako nije ceo model uzmi samo idPatient
-            return true;
-        }
+                } else
+                {
+                    if (examinationPOCO.DateTime.Hour < 14)
+                    {
+                        return "Izabrani doktor radi suprotnoj smenu";
+                    }
+                }
+                List<Examination> examinationsByDoctor = _examinationRepository.Find(x => x.DoctorId.Equals(examinationPOCO.DoctorId) && !x.Status.Equals(2)).ToList();
+                foreach (Examination ex in examinationsByDoctor)
+                {
+                    if (ex.DateTime == examinationPOCO.DateTime)
+                    {
+                        return "Doktor u to vreme vec ima zakazan pregled";
+                    }
+                }
+                List<Examination> examinationsByRoom = _examinationRepository.Find(x => x.RoomId.Equals(examinationPOCO.RoomId) && !x.Status.Equals(2)).ToList();
+                foreach (Examination ex in examinationsByRoom)
+                {
+                    if (ex.DateTime == examinationPOCO.DateTime)
+                    {
+                        return "Soba je zazeta  tom terminu";
+                    }
+                }
+                examinationPOCO.Status = ExaminationStatus.Requested;
+                examinationPOCO.PreDefined = true;
+                await _examinationRepository.Create(_mapper.Map<ExaminationPOCO, Examination>(examinationPOCO));
+                return "Uspesno dodat predefinisani pregled";
+            }
 
-        public async Task<object> GetPreDefinitionExamination()
-        {
-            return _examinationRepository.Find(x => x.PreDefined.Equals(true) && !x.Status.Equals(ExaminationStatus.Accepted)).ToList();
+            public async Task<bool> AcceptPreDefinitionExamination(ExaminationPOCO examinationPOCO)
+            {
+                examinationPOCO.Status = ExaminationStatus.Finished;
+                await _examinationRepository.Update(_mapper.Map<ExaminationPOCO, Examination>(examinationPOCO));//ako nije ceo model uzmi samo idPatient
+                return true;
+            }
+            public async Task<object> GetPreDefinitionExamination()
+            {
+                return _examinationRepository.Find(x => x.PreDefined.Equals(true) && !x.Status.Equals(ExaminationStatus.Accepted)).ToList();
 
-        }
+            }
     }
-    
+
 }
+
 

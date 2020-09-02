@@ -70,7 +70,7 @@ namespace HospitalIsa.BLL.Services
                 UserName = (model.Email.Split('@')).First(),
                 EmailConfirmed = true
             };
-
+            if (!IsJmbgUnique(model.Jmbg)) return false;
             var result = await _userManager.CreateAsync(newUser, model.Password);
             newUser.UserId = Guid.Parse(newUser.Id);
             if (result.Succeeded)
@@ -147,6 +147,14 @@ namespace HospitalIsa.BLL.Services
             }
             return false;
         }
+
+        private bool IsJmbgUnique(string jmbg)
+        {
+            if (_employeeRepository.Find(employe => employe.Jmbg.Equals(jmbg)).First() == null) return false;
+            else if( _patientRepository.Find(patient => patient.Jmbg.Equals(jmbg)).First() == null) return false;
+            return true;
+        }
+
         private bool PriceExists(Price newPrice)
         {
            foreach (Price price in  _priceListRepository.GetAll())
@@ -295,23 +303,37 @@ namespace HospitalIsa.BLL.Services
         }
         public async Task<bool> UpdatePatient(PatientPOCO patient)
         {
-            var result = await _patientRepository.Update(_mapper.Map<PatientPOCO, Patient>(patient));
+            Patient patientToUpdate = _patientRepository.Find(pat => pat.Email.Equals(patient.Email)).First();
+            patientToUpdate.FirstName = patient.FirstName;
+            patientToUpdate.LastName = patient.LastName;
+            patientToUpdate.Email = patient.Email;
+            patientToUpdate.Address = patient.Address;
+            patientToUpdate.City = patient.City;
+            patientToUpdate.State = patient.State;
+
+            var result = await _patientRepository.Update(_mapper.Map<PatientPOCO,Patient>(patient));
             if (result)
             {
                 return true;
             }else 
                 return false;
         }
-        public async Task<bool> UpdateEmployee(EmployeePOCO employee)
+        public async Task<bool> UpdateEmployee(RegisterPOCO employee)
         {
-            var examinationOfDoctor = _examinationRepository.Find(examination => examination.DoctorId.Equals(employee.EmployeeId)).ToList();
+            var examinationOfDoctor = _examinationRepository.Find(examination => examination.DoctorId.Equals(employee.Email)).ToList();
 
             foreach (Examination examination in examinationOfDoctor)
             {
                 if (examination.Status.Equals(ExaminationStatus.Accepted))
                     return false;
             }
-            var result = await _employeeRepository.Update(_mapper.Map<EmployeePOCO, Employee>(employee));
+            Employee employeeToUpdate = _employeeRepository.Find(emp => emp.Email.Equals(employee.Email)).First();
+            employeeToUpdate.FirstName = employee.FirstName;
+            employeeToUpdate.LastName = employee.LastName;
+            employeeToUpdate.State = employee.State;
+            employeeToUpdate.Address = employee.Address;
+            employeeToUpdate.City = employee.City;
+            var result = await _employeeRepository.Update(employeeToUpdate);
             if (result) return true;
                         return false;
         }     

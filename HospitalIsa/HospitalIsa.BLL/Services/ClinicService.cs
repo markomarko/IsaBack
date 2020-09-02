@@ -53,7 +53,9 @@ namespace HospitalIsa.BLL.Services
                 {
                     ClinicId = Guid.NewGuid(),
                     Name = clinic.Name,
-                    Address = clinic.Address
+                    Address = clinic.Address,
+                    Longitude = clinic.Longitude,
+                    Latitude = clinic.Latitude
                 };
                 //var result = _clinicRepository.Find(c => c.Name.Equals(clinic.Name));
 
@@ -76,6 +78,10 @@ namespace HospitalIsa.BLL.Services
             {
                 throw e;
             }
+        }
+        public async Task<object> GetClinicById(Guid clinicId)
+        {
+            return _clinicRepository.Find(clinic => clinic.ClinicId.Equals(clinicId));
         }
         public async Task<object> GetAdminsFromClinic(Guid clinicId)
         {
