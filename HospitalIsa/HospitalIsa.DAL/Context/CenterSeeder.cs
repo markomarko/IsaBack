@@ -38,14 +38,27 @@ namespace Hospital.DAL
                         EmailConfirmed = true,
                         SignedBefore = true
                     };
+                    #region Add Doctor
+                    //User doctor = new User()
+                    //{
+                    //    UserName = "doctor1",
+                    //    Email = "doctor1@gmail.com",
+                    //    EmailConfirmed = true,
+                    //    SignedBefore = true
+                    //};
+                    //Employee doctorEmployee = new Employee()
+                    //{
+                        
+                    //}
 
+
+                    #endregion
 
                     await _roleManager.CreateAsync(new IdentityRole("ClinicCenterAdmin"));
                     await _roleManager.CreateAsync(new IdentityRole("ClinicAdmin"));
                     await _roleManager.CreateAsync(new IdentityRole("Doctor"));
                     await _roleManager.CreateAsync(new IdentityRole("Nurse"));
                     await _roleManager.CreateAsync(new IdentityRole("Patient"));
-
                     var result = await _userManager.CreateAsync(admin, "Gaja1234!");
                     var result1 = await _userManager.AddToRoleAsync(admin, "ClinicCenterAdmin");
                     if (result != IdentityResult.Success)
@@ -54,10 +67,10 @@ namespace Hospital.DAL
                     }
                     admin.UserId = Guid.Parse(admin.Id);
 
-
-
                     _context.SaveChanges();
                 }
+
+
             }
             catch (Exception ex)
             {

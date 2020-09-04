@@ -4,6 +4,7 @@ using HospitalIsa.API.Models;
 using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Models;
 using HospitalIsa.DAL.Entites;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -38,13 +39,15 @@ namespace HospitalIsa.API.Controllers
             _mapper = mapper;
             _config = config;
         }
- 
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetUserById/{id}")]
         public async Task<object> GetUserById([FromRoute] Guid id)
         {
             return await _userContract.GetUserById(id);
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin")]
         [HttpPost]
         [Route("DeleteEmployee")]
         public async Task<bool> DeleteEmployee([FromBody] EmployeeModel employee)
@@ -54,6 +57,8 @@ namespace HospitalIsa.API.Controllers
                 return true;
             }return false;
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Patient")]
         [HttpPost]
         [Route("UpdatePatient")]
         public async Task<bool> UpdatePatient([FromBody] RegisterModel patient)
@@ -68,7 +73,8 @@ namespace HospitalIsa.API.Controllers
                 return true;
             }
         }
-        
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin, Doctor")]
         [HttpPost]
         [Route("UpdateEmployee")]
         public async Task<bool> UpdateEmployee([FromBody] RegisterModel employee)
@@ -78,6 +84,8 @@ namespace HospitalIsa.API.Controllers
                         return false;
             
         }
+
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetAllSpecializations")]
         public async Task<List<string>> GetAllSpecializations()
@@ -91,7 +99,8 @@ namespace HospitalIsa.API.Controllers
                 throw e;
             }
         }
-
+        
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Doctor, ClinicAdmin")]
         [HttpPost]
         [Route("VacationRequest")]
         public async Task<bool> VacationRequest([FromBody] VacationModel vocation)
@@ -102,10 +111,12 @@ namespace HospitalIsa.API.Controllers
 
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin, Doctor")]
         [HttpGet]
         [Route("GetVacationRequests")]
         public async Task<object> GetVacationRequests() => await _userContract.GetVacationRequests();
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin")]
         [Route("AcceptVacationRequests")]
         public async Task<bool> AcceptVacationRequests(MailModel mail)
         {
@@ -117,6 +128,7 @@ namespace HospitalIsa.API.Controllers
             }
             return false;
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin")]
         [HttpPost]
         [Route("DenyVacationRequests")]
         public async Task<bool> DenyVacationRequests(MailModel mail)

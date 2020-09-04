@@ -5,6 +5,8 @@ using HospitalIsa.API.Models;
 using HospitalIsa.BLL.Contracts;
 using HospitalIsa.BLL.Models;
 using HospitalIsa.DAL.Entites;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -31,6 +33,7 @@ namespace HospitalIsa.API.Controllers
             _clinicContract = clinicContract;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicCenterAdmin")]
         [HttpPost]
         [Route("AddClinic")]
         public async Task<bool> AddClinic([FromBody] ClinicModel clinic)
@@ -42,21 +45,29 @@ namespace HospitalIsa.API.Controllers
             }
             return false;
         }
+        
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetAllClinics")]
         public async Task<object> GetAllClinics() => await _clinicContract.GetAllClinics();
+        
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetAdminsFromClinic/{clinicId}")]
         public async Task<object> GetAdminsFromClinic([FromRoute] string clinicId)
         {
             return await _clinicContract.GetAdminsFromClinic(Guid.Parse(clinicId));
         }
+        
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetClinicByAdminId/{adminId}")]
         public async Task<object> GetClinicByAdminId([FromRoute] string adminId)
         {
             return await _clinicContract.GetClinicByAdminId(Guid.Parse(adminId));
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin")]
         [HttpPost]
         [Route("AddRoomToClinic")]
         public async Task<bool> AddRoomToClinic([FromBody] RoomModel room)
@@ -65,6 +76,8 @@ namespace HospitalIsa.API.Controllers
             if (result) return true;
             return false;
         }
+
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetPriceList/{clinicId}")]
         public async Task<object> GetPriceList([FromRoute] string clinicId)
@@ -80,6 +93,8 @@ namespace HospitalIsa.API.Controllers
             }
            
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin")]
         [HttpPost]
         [Route("UpdatePrice")]
         public async Task<bool> UpdatePrice([FromBody] PriceModel price)
@@ -91,12 +106,16 @@ namespace HospitalIsa.API.Controllers
             return false;
             
         }
+
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetAllRooms/{adminId}")]
         public async Task<object> GetAllRooms([FromRoute] string adminId)
         {
             return await _clinicContract.GetAllRooms(Guid.Parse(adminId));
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin")]
         [HttpPost]
         [Route("UpdateRoom")]
         public async Task<bool> UpdateRoom ([FromBody] RoomModel room)
@@ -105,6 +124,8 @@ namespace HospitalIsa.API.Controllers
                 return true;
             return false;
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin")]
         [HttpPost]
         [Route("DeleteRoom")]
         public async Task<bool> DeleteRoom([FromBody] RoomModel room)
@@ -113,12 +134,16 @@ namespace HospitalIsa.API.Controllers
                 return true;
             return false;
         }
+
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetAllDoctorsFromClinic/{clinicId}")]
         public async Task<object> GetAllDoctorsFromClinic([FromRoute] string clinicId)
         {
           return await  _clinicContract.GetAllDoctorsFromClinic(Guid.Parse(clinicId));
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin, Doctor")]
         [HttpGet]
         [Route("GetPatientsByClinicId/{clinicId}")]
         public async Task<object> GetPatientsByClinicId([FromRoute] string clinicId)
@@ -131,6 +156,8 @@ namespace HospitalIsa.API.Controllers
                 throw e;
             }
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicAdmin, Doctor")]
         [HttpGet]
         [Route("GetPatientsByDoctorId/{doctorId}")]
         public async Task<object> GetPatientsByDoctorId([FromRoute] string doctorId)
@@ -146,6 +173,7 @@ namespace HospitalIsa.API.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetAllReviewsFromClinic/{clinicId}")]
         public async Task<object> GetAllReviewsFromClinic([FromRoute] string clinicId)
@@ -160,6 +188,7 @@ namespace HospitalIsa.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetClinicById/{clinicId}")]
         public async Task<object> GetClinicById([FromRoute] string clinicId)

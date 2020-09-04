@@ -12,10 +12,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hospital.MailService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace HospitalIsa.API.Controllers
 {
-
+    //[AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -40,6 +42,7 @@ namespace HospitalIsa.API.Controllers
             _config = config;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public async Task<bool> Register([FromBody] RegisterModel model)
@@ -52,15 +55,21 @@ namespace HospitalIsa.API.Controllers
             }
             return false;
         }
+       
+        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
         public async Task<object> Login([FromBody] LoginModel model)
         {
             return await _userContract.LoginUser(_mapper.Map<LoginModel, LoginPOCO>(model));
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles ="ClinicCenterAdmin")]
         [HttpGet]
         [Route("GetRegisterRequests")]
         public async Task<object> GetRegisterRequests() => await _userContract.GetRegisterRequests();
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicCenterAdmin")]
         [HttpPost]
         [Route("AcceptPatientRegisterRequest")]
         public async Task<bool> AcceptPatientRegisterRequest(MailModel mail)
@@ -73,6 +82,7 @@ namespace HospitalIsa.API.Controllers
             }
             return false;
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "ClinicCenterAdmin")]
         [HttpPost]
         [Route("DenyPatientRegisterRequest")]
         public async Task<bool> DenyPatientRegisterRequest(MailModel mail)
@@ -85,6 +95,8 @@ namespace HospitalIsa.API.Controllers
             }
             return false; 
         }
+      
+        [AllowAnonymous]
         [HttpGet]
         [Route("CheckIfSignedBefore/{userId}")]
         public async Task<bool> CheckIfSignedBefore([FromRoute] string userId)
@@ -96,6 +108,7 @@ namespace HospitalIsa.API.Controllers
             return false;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("SendMail")]
         public bool SendMail([FromBody] MailModel mail)
@@ -107,6 +120,7 @@ namespace HospitalIsa.API.Controllers
                 
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("ChangePassword")]
         public async Task<bool> ChangePassword([FromBody] ChangePasswordModel changePasswordModel)

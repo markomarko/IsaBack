@@ -211,7 +211,7 @@ namespace HospitalIsa.BLL.Services
                 var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Jti, user.UserId.ToString()),
-                    new Claim("Role", role),
+                    new Claim(ClaimTypes.Role, role),
                 };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));

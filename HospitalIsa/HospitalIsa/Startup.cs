@@ -43,6 +43,7 @@ namespace HospitalIsa
                 cfg.User.RequireUniqueEmail = true;
                 cfg.Password.RequiredLength = 8;
             })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<CenterContext>();
 
             services.AddAuthentication()
@@ -54,6 +55,7 @@ namespace HospitalIsa
                         ValidIssuer = Configuration["Tokens:Issuer"],
                         ValidAudience = Configuration["Tokens:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                        
                     };
                 });
             services.AddDbContext<CenterContext>(cfg =>
